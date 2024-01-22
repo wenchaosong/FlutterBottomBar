@@ -44,7 +44,6 @@ class _WaveBottomBarState extends State<WaveBottomBar> {
         CustomPaint(
           size: Size(MediaQuery.of(context).size.width, widget.height ?? 0),
           painter: WavePainter(
-            height: widget.height ?? 0,
             waveHeight: widget.waveHeight ?? 0,
             backgroundColor: widget.backgroundColor ?? Colors.white,
             elevation: widget.elevation ?? 0,

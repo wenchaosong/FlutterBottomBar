@@ -17,7 +17,7 @@ class _WavePageState extends State<WavePage> {
   double _waveHeight = 30.0;
   Color _backgroundColor = Colors.blue;
   double _elevation = 15.0;
-  Color _shadowColor = Colors.red;
+  Color _shadowColor = Colors.grey.shade500;
 
   Widget _buildHeight() {
     return Row(
@@ -165,10 +165,6 @@ class _WavePageState extends State<WavePage> {
             ItemTextWidget(
               title: 'ShadowColor',
               subWidget: _buildShadowColor(),
-            ),
-            Container(
-              height: 1000,
-              color: Colors.grey.shade600,
             ),
           ],
         ),
