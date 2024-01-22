@@ -14,8 +14,9 @@ class WavePage extends StatefulWidget {
 
 class _WavePageState extends State<WavePage> {
   double _height = 100.0;
-  double _waveHeight = 30.0;
-  Color _backgroundColor = Colors.blue;
+  double _amplitude = 30.0;
+  double _waveLength = 40.0;
+  Color _backgroundColor = Colors.white;
   double _elevation = 15.0;
   Color _shadowColor = Colors.grey.shade500;
 
@@ -39,22 +40,42 @@ class _WavePageState extends State<WavePage> {
     );
   }
 
-  Widget _buildWaveHeight() {
+  Widget _buildAmplitude() {
     return Row(
       children: [
         Expanded(
           child: Slider(
-            value: _waveHeight,
-            min: 5.0,
+            value: _amplitude,
+            min: 0.0,
             max: 30.0,
-            divisions: 25,
+            divisions: 30,
             onChanged: (value) {
-              _waveHeight = value.roundToDouble();
+              _amplitude = value.roundToDouble();
               setState(() {});
             },
           ),
         ),
-        Text("${_waveHeight}")
+        Text("${_amplitude}")
+      ],
+    );
+  }
+
+  Widget _buildWaveLength() {
+    return Row(
+      children: [
+        Expanded(
+          child: Slider(
+            value: _waveLength,
+            min: 0.0,
+            max: 100.0,
+            divisions: 50,
+            onChanged: (value) {
+              _waveLength = value.roundToDouble();
+              setState(() {});
+            },
+          ),
+        ),
+        Text("${_waveLength}")
       ],
     );
   }
@@ -151,8 +172,12 @@ class _WavePageState extends State<WavePage> {
               subWidget: _buildHeight(),
             ),
             ItemTextWidget(
-              title: 'WaveHeight',
-              subWidget: _buildWaveHeight(),
+              title: 'Amplitude',
+              subWidget: _buildAmplitude(),
+            ),
+            ItemTextWidget(
+              title: 'WaveLength',
+              subWidget: _buildWaveLength(),
             ),
             ItemTextWidget(
               title: 'BackgroundColor',
@@ -171,7 +196,8 @@ class _WavePageState extends State<WavePage> {
       ),
       bottomNavigationBar: WaveBottomBar(
         height: _height,
-        waveHeight: _waveHeight,
+        amplitude: _amplitude,
+        waveLength: _waveLength,
         backgroundColor: _backgroundColor,
         elevation: _elevation,
         shadowColor: _shadowColor,

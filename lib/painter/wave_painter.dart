@@ -4,18 +4,22 @@ class WavePainter extends CustomPainter {
   final _paint = Paint();
   final _shadowPaint = Paint();
 
-  final double waveHeight;
+  final double amplitude;
+  final double waveLength;
   final Color backgroundColor;
   final double elevation;
   final Color shadowColor;
   final int length;
+  final int currentIndex;
 
   WavePainter({
-    required this.waveHeight,
+    required this.amplitude,
+    required this.waveLength,
     required this.backgroundColor,
     required this.elevation,
     required this.shadowColor,
     required this.length,
+    required this.currentIndex,
   }) : super(repaint: const AlwaysStoppedAnimation(0)) {
     _paint.color = backgroundColor;
     _shadowPaint
@@ -26,7 +30,6 @@ class WavePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     Path path = Path();
-    path.moveTo(0, 0);
 
     var perWidth = size.width / length;
     var begin = size.width * 0.50 - perWidth / 2;
@@ -35,17 +38,17 @@ class WavePainter extends CustomPainter {
     path.lineTo(begin, 0);
 
     path.cubicTo(
-      begin + perWidth / 5,
+      begin + waveLength,
       0,
-      size.width * 0.50 - perWidth / 5,
-      -waveHeight,
+      size.width * 0.50 - waveLength,
+      -amplitude,
       size.width * 0.50,
-      -waveHeight,
+      -amplitude,
     );
     path.cubicTo(
-      size.width * 0.50 + perWidth / 5,
-      -waveHeight,
-      end - perWidth / 5,
+      size.width * 0.50 + waveLength,
+      -amplitude,
+      end - waveLength,
       0,
       end,
       0,
