@@ -16,10 +16,11 @@ class WaveBottomBar extends StatefulWidget {
   final int? initialIndex;
   final List<BottomNavigationBarItem> items;
   final WaveBottomBarType type;
-  final Color? selectedItemColor;
-  final Color? unselectedItemColor;
-  final TextStyle? selectedLabelStyle;
-  final TextStyle? unselectedLabelStyle;
+  final double labelMargin;
+  final Duration duration;
+  final Curve curve;
+  final TextStyle selectedLabelStyle;
+  final TextStyle unselectedLabelStyle;
   final Function(int index) onTap;
 
   WaveBottomBar({
@@ -33,10 +34,17 @@ class WaveBottomBar extends StatefulWidget {
     this.initialIndex,
     required this.items,
     this.type = WaveBottomBarType.normal,
-    this.selectedItemColor,
-    this.unselectedItemColor,
-    this.selectedLabelStyle,
-    this.unselectedLabelStyle,
+    this.labelMargin = 7,
+    this.duration = const Duration(milliseconds: 50),
+    this.curve = Curves.linear,
+    this.selectedLabelStyle = const TextStyle(
+      fontSize: 12,
+      color: Colors.blue,
+    ),
+    this.unselectedLabelStyle = const TextStyle(
+      fontSize: 12,
+      color: Colors.grey,
+    ),
     required this.onTap,
   }) : super(key: key) {
     if (type == WaveBottomBarType.fixed) {
@@ -93,11 +101,12 @@ class _WaveBottomBarState extends State<WaveBottomBar>
               _currentIndex == i
                   ? widget.items[i].activeIcon
                   : widget.items[i].icon,
-              //TODO set margin
-              const SizedBox(height: 5),
+              SizedBox(height: widget.labelMargin),
               Text(
                 "${widget.items[i].label}",
-                style: widget.selectedLabelStyle,
+                style: _currentIndex == i
+                    ? widget.selectedLabelStyle
+                    : widget.unselectedLabelStyle,
               ),
             ],
           ),
@@ -114,8 +123,8 @@ class _WaveBottomBarState extends State<WaveBottomBar>
     }
     _animCon.animateTo(
       _currentIndex / widget.items.length,
-      //TODO set anim
-      duration: const Duration(milliseconds: 100),
+      duration: widget.duration,
+      curve: widget.curve,
     );
   }
 
@@ -132,7 +141,7 @@ class _WaveBottomBarState extends State<WaveBottomBar>
               waveLength: widget.waveLength ?? 0,
               backgroundColor: widget.backgroundColor ?? Colors.transparent,
               elevation: widget.elevation ?? 0,
-              shadowColor: widget.shadowColor ?? Colors.grey.shade200,
+              shadowColor: widget.shadowColor ?? Colors.grey.shade300,
               length: widget.items.length,
               percentage: _animCon.value,
             ),

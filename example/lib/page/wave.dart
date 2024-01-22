@@ -13,12 +13,11 @@ class WavePage extends StatefulWidget {
 }
 
 class _WavePageState extends State<WavePage> {
-  double _height = 100.0;
+  double _height = 60.0;
   double _amplitude = 30.0;
   double _waveLength = 40.0;
   Color _backgroundColor = Colors.white;
   double _elevation = 15.0;
-  Color _shadowColor = Colors.grey.shade500;
 
   Widget _buildHeight() {
     return Row(
@@ -128,34 +127,6 @@ class _WavePageState extends State<WavePage> {
     );
   }
 
-  Widget _buildShadowColor() {
-    return InkWell(
-      onTap: () {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Select color'),
-              content: SingleChildScrollView(
-                child: BlockPicker(
-                  pickerColor: _shadowColor,
-                  onColorChanged: (color) {
-                    _shadowColor = color;
-                    setState(() {});
-                  },
-                ),
-              ),
-            );
-          },
-        );
-      },
-      child: Container(
-        color: _shadowColor,
-        margin: EdgeInsets.only(left: 20, right: 20),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -187,10 +158,6 @@ class _WavePageState extends State<WavePage> {
               title: 'Elevation',
               subWidget: _buildElevation(),
             ),
-            ItemTextWidget(
-              title: 'ShadowColor',
-              subWidget: _buildShadowColor(),
-            ),
           ],
         ),
       ),
@@ -200,12 +167,9 @@ class _WavePageState extends State<WavePage> {
         waveLength: _waveLength,
         backgroundColor: _backgroundColor,
         elevation: _elevation,
-        shadowColor: _shadowColor,
         items: BarItem.items,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        selectedLabelStyle: TextStyle(fontSize: 12),
-        unselectedLabelStyle: TextStyle(fontSize: 12),
+        selectedLabelStyle: TextStyle(fontSize: 12, color: Colors.blue),
+        unselectedLabelStyle: TextStyle(fontSize: 12, color: Colors.grey),
         onTap: (index) {
           debugPrint("$index");
         },
