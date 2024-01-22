@@ -10,7 +10,7 @@ class WavePainter extends CustomPainter {
   final double elevation;
   final Color shadowColor;
   final int length;
-  final int currentIndex;
+  final double percentage;
 
   WavePainter({
     required this.amplitude,
@@ -19,7 +19,7 @@ class WavePainter extends CustomPainter {
     required this.elevation,
     required this.shadowColor,
     required this.length,
-    required this.currentIndex,
+    required this.percentage,
   }) : super(repaint: const AlwaysStoppedAnimation(0)) {
     _paint.color = backgroundColor;
     _shadowPaint
@@ -32,21 +32,24 @@ class WavePainter extends CustomPainter {
     Path path = Path();
 
     var perWidth = size.width / length;
-    var begin = size.width * 0.50 - perWidth / 2;
-    var end = size.width * 0.50 + perWidth / 2;
+
+    var begin = size.width * percentage;
+    var middle = begin + perWidth / 2;
+    var end = begin + perWidth;
 
     path.lineTo(begin, 0);
 
+    //TODO calculate width
     path.cubicTo(
       begin + waveLength,
       0,
-      size.width * 0.50 - waveLength,
+      middle - waveLength,
       -amplitude,
-      size.width * 0.50,
+      middle,
       -amplitude,
     );
     path.cubicTo(
-      size.width * 0.50 + waveLength,
+      middle + waveLength,
       -amplitude,
       end - waveLength,
       0,
