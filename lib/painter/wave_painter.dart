@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../bottom_bar.dart';
+
 class WavePainter extends CustomPainter {
   final _paint = Paint();
   final _shadowPaint = Paint();
@@ -9,6 +11,7 @@ class WavePainter extends CustomPainter {
   final Color backgroundColor;
   final double elevation;
   final Color shadowColor;
+  final WaveBottomBarDirection direction;
   final int length;
   final double percentage;
 
@@ -18,6 +21,7 @@ class WavePainter extends CustomPainter {
     required this.backgroundColor,
     required this.elevation,
     required this.shadowColor,
+    required this.direction,
     required this.length,
     required this.percentage,
   }) : super(repaint: const AlwaysStoppedAnimation(0)) {
@@ -35,25 +39,23 @@ class WavePainter extends CustomPainter {
 
     var begin = size.width * percentage;
     var middle = begin + perWidth / 2;
-    var end = begin + perWidth;
 
-    path.lineTo(begin, 0);
+    path.lineTo(middle - waveLength / 2, 0);
 
-    //TODO calculate width
     path.cubicTo(
-      begin + waveLength,
+      middle - waveLength / 4,
       0,
-      middle - waveLength,
-      -amplitude,
+      middle - waveLength / 4,
+      direction == WaveBottomBarDirection.up ? -amplitude : amplitude,
       middle,
-      -amplitude,
+      direction == WaveBottomBarDirection.up ? -amplitude : amplitude,
     );
     path.cubicTo(
-      middle + waveLength,
-      -amplitude,
-      end - waveLength,
+      middle + waveLength / 4,
+      direction == WaveBottomBarDirection.up ? -amplitude : amplitude,
+      middle + waveLength / 4,
       0,
-      end,
+      middle + waveLength / 2,
       0,
     );
 

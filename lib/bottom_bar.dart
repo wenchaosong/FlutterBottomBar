@@ -6,6 +6,8 @@ import 'painter/wave_painter.dart';
 
 enum WaveBottomBarType { normal, fixed }
 
+enum WaveBottomBarDirection { up, down }
+
 class WaveBottomBar extends StatefulWidget {
   final double? height;
   final double? amplitude;
@@ -16,6 +18,7 @@ class WaveBottomBar extends StatefulWidget {
   final int? initialIndex;
   final List<BottomNavigationBarItem> items;
   final WaveBottomBarType type;
+  final WaveBottomBarDirection direction;
   final double labelMargin;
   final Duration duration;
   final Curve curve;
@@ -25,7 +28,7 @@ class WaveBottomBar extends StatefulWidget {
 
   WaveBottomBar({
     Key? key,
-    this.height,
+    this.height = 56.0,
     this.amplitude,
     this.waveLength,
     this.backgroundColor,
@@ -34,7 +37,8 @@ class WaveBottomBar extends StatefulWidget {
     this.initialIndex,
     required this.items,
     this.type = WaveBottomBarType.normal,
-    this.labelMargin = 7,
+    this.direction = WaveBottomBarDirection.up,
+    this.labelMargin = 3,
     this.duration = const Duration(milliseconds: 50),
     this.curve = Curves.linear,
     this.selectedLabelStyle = const TextStyle(
@@ -142,6 +146,7 @@ class _WaveBottomBarState extends State<WaveBottomBar>
               backgroundColor: widget.backgroundColor ?? Colors.transparent,
               elevation: widget.elevation ?? 0,
               shadowColor: widget.shadowColor ?? Colors.grey.shade300,
+              direction: widget.direction,
               length: widget.items.length,
               percentage: _animCon.value,
             ),
