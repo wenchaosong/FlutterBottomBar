@@ -4,26 +4,78 @@ import 'package:flutter/material.dart';
 
 import 'painter/wave_painter.dart';
 
-enum WaveBottomBarType { normal, fixed }
+/// type of the [WaveBottomBar]
+enum WaveBottomBarType {
+  /// default type of the [WaveBottomBar], the wave can move
+  normal,
 
-enum WaveBottomBarDirection { up, down }
+  /// wave can't move, and it is always at middle
+  fixed,
+}
 
+/// direction of the [WaveBottomBar]
+enum WaveBottomBarDirection {
+  /// default direction of the wave, the wave direction is up
+  up,
+
+  /// the wave direction is down, this required Scaffold extendBody is true
+  down,
+}
+
+/// A bottom widget that like a wave can smoothly move to the active position
+/// and provide much attrs to config the widget
 class WaveBottomBar extends StatefulWidget {
+  /// height of the [WaveBottomBar]
   final double? height;
+
+  /// amplitude or height of the [WavePainter]
+  /// If the value is 0, the wave is gone
   final double? amplitude;
+
+  /// length of the [WavePainter]
+  /// If the value is 0, the wave is gone
   final double? waveLength;
+
+  /// whole widget background color
   final Color? backgroundColor;
+
+  /// shadow of the [WavePainter]
   final double? elevation;
+
+  /// shadow color of the [WavePainter]
   final Color? shadowColor;
+
+  /// the initial active index of the [WaveBottomBar]
   final int? initialIndex;
+
+  /// widget list of the [WaveBottomBar]
+  /// contains normal icon, active icon and text
   final List<BottomNavigationBarItem> items;
+
+  /// type of the [WaveBottomBar]
+  /// See [WaveBottomBarType] for more information
   final WaveBottomBarType type;
+
+  /// direction of the [WaveBottomBar]
+  /// See [WaveBottomBarDirection] for more information
   final WaveBottomBarDirection direction;
+
+  /// the margin between label and icon
   final double labelMargin;
+
+  /// the wave move anim duration
   final Duration duration;
+
+  /// the wave move anim curve
   final Curve curve;
+
+  /// active item text style
   final TextStyle selectedLabelStyle;
+
+  /// normal item text style
   final TextStyle unselectedLabelStyle;
+
+  /// called when one of the [items] is tapped.
   final Function(int index) onTap;
 
   WaveBottomBar({
@@ -62,6 +114,7 @@ class WaveBottomBar extends StatefulWidget {
 
 class _WaveBottomBarState extends State<WaveBottomBar>
     with SingleTickerProviderStateMixin {
+  /// the active item index
   int _currentIndex = 0;
   late AnimationController _animCon;
 
@@ -85,7 +138,9 @@ class _WaveBottomBarState extends State<WaveBottomBar>
     super.dispose();
   }
 
-  List<Widget> createChild() {
+  /// the widget list of bottom items, contains icon and text
+  /// TODO set the icon
+  List<Widget> createItem() {
     final List<Widget> child = [];
     for (var i = 0; i < widget.items.length; i++) {
       child.add(Expanded(
@@ -99,20 +154,23 @@ class _WaveBottomBarState extends State<WaveBottomBar>
             animToIndex();
             setState(() {});
           },
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _currentIndex == i
-                  ? widget.items[i].activeIcon
-                  : widget.items[i].icon,
-              SizedBox(height: widget.labelMargin),
-              Text(
-                "${widget.items[i].label}",
-                style: _currentIndex == i
-                    ? widget.selectedLabelStyle
-                    : widget.unselectedLabelStyle,
-              ),
-            ],
+          child: SizedBox(
+            height: widget.height ?? 0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _currentIndex == i
+                    ? widget.items[i].activeIcon
+                    : widget.items[i].icon,
+                SizedBox(height: widget.labelMargin),
+                Text(
+                  "${widget.items[i].label}",
+                  style: _currentIndex == i
+                      ? widget.selectedLabelStyle
+                      : widget.unselectedLabelStyle,
+                ),
+              ],
+            ),
           ),
         ),
       ));
@@ -120,6 +178,7 @@ class _WaveBottomBarState extends State<WaveBottomBar>
     return child;
   }
 
+  /// start anim to active item, pass the percentage to the wave
   void animToIndex() {
     if (widget.type == WaveBottomBarType.fixed) {
       _animCon.animateTo(0.5);
@@ -142,10 +201,10 @@ class _WaveBottomBarState extends State<WaveBottomBar>
         elevation: widget.elevation ?? 0,
         shadowColor: widget.shadowColor ?? Colors.grey.shade300,
         direction: widget.direction,
-        length: widget.items.length,
+        barCount: widget.items.length,
         percentage: _animCon.value,
       ),
-      child: Row(children: createChild()),
+      child: Row(children: createItem()),
     );
   }
 }

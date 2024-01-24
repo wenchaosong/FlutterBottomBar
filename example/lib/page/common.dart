@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../view/item_bar.dart';
+import '../data/bar_data.dart';
 
 class CommonPage extends StatefulWidget {
   const CommonPage({super.key});
@@ -22,7 +22,7 @@ class _CommonPageState extends State<CommonPage> {
       ),
       body: Container(
         alignment: Alignment.center,
-        child: Text("${BarItem.items[_currentIndex].label}"),
+        child: Text("${BarItem.normalItems[_currentIndex].label}"),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -32,7 +32,7 @@ class _CommonPageState extends State<CommonPage> {
         elevation: 10,
         selectedLabelStyle: TextStyle(fontSize: 12),
         unselectedLabelStyle: TextStyle(fontSize: 12),
-        items: BarItem.items,
+        items: BarItem.normalItems,
         onTap: (index) {
           _currentIndex = index;
           setState(() {});

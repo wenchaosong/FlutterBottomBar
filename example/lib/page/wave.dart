@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bottom_bar/bottom_bar.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
-import '../view/item_bar.dart';
-import '../view/item_text.dart';
+import '../data/bar_data.dart';
+import '../data/radio_data.dart';
+import '../view/item_color.dart';
+import '../view/item_radio.dart';
+import '../view/item_slide.dart';
 
 class WavePage extends StatefulWidget {
   const WavePage({super.key});
@@ -18,140 +21,30 @@ class _WavePageState extends State<WavePage> {
   double _waveLength = 100.0;
   Color _backgroundColor = Colors.white;
   double _elevation = 15.0;
+  Color _shadowColor = Colors.red;
   String _direction = "up";
 
-  Widget _buildHeight() {
-    return Row(
-      children: [
-        Expanded(
-          child: Slider(
-            value: _height,
-            min: 50.0,
-            max: 100.0,
-            divisions: 50,
-            onChanged: (value) {
-              _height = value.roundToDouble();
-              setState(() {});
-            },
+  void displayDialog(
+    String title,
+    Color color,
+    Function(Color color) onColorChanged,
+  ) {
+    showDialog(
+      context: context,
+      builder: (BuildContext con) {
+        return AlertDialog(
+          title: Text('Select $title color'),
+          content: SingleChildScrollView(
+            child: BlockPicker(
+              pickerColor: color,
+              onColorChanged: (val) {
+                onColorChanged(val);
+                Navigator.of(con).pop();
+              },
+            ),
           ),
-        ),
-        Text("${_height}")
-      ],
-    );
-  }
-
-  Widget _buildAmplitude() {
-    return Row(
-      children: [
-        Expanded(
-          child: Slider(
-            value: _amplitude,
-            min: 0.0,
-            max: 50.0,
-            divisions: 50,
-            onChanged: (value) {
-              _amplitude = value.roundToDouble();
-              setState(() {});
-            },
-          ),
-        ),
-        Text("${_amplitude}")
-      ],
-    );
-  }
-
-  Widget _buildWaveLength() {
-    return Row(
-      children: [
-        Expanded(
-          child: Slider(
-            value: _waveLength,
-            min: 0.0,
-            max: 150.0,
-            divisions: 50,
-            onChanged: (value) {
-              _waveLength = value.roundToDouble();
-              setState(() {});
-            },
-          ),
-        ),
-        Text("${_waveLength}")
-      ],
-    );
-  }
-
-  Widget _buildColor() {
-    return InkWell(
-      onTap: () {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Select color'),
-              content: SingleChildScrollView(
-                child: BlockPicker(
-                  pickerColor: _backgroundColor,
-                  onColorChanged: (color) {
-                    _backgroundColor = color;
-                    setState(() {});
-                  },
-                ),
-              ),
-            );
-          },
         );
       },
-      child: Container(
-        color: _backgroundColor,
-        margin: EdgeInsets.only(left: 20, right: 20),
-      ),
-    );
-  }
-
-  Widget _buildElevation() {
-    return Row(
-      children: [
-        Expanded(
-          child: Slider(
-            value: _elevation,
-            min: 0.0,
-            max: 50.0,
-            divisions: 50,
-            onChanged: (value) {
-              _elevation = value.roundToDouble();
-              setState(() {});
-            },
-          ),
-        ),
-        Text("${_elevation}")
-      ],
-    );
-  }
-
-  Widget _buildDirection() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Expanded(child: Container()),
-        Radio(
-            value: "up",
-            groupValue: _direction,
-            onChanged: (value) {
-              _direction = value!;
-              setState(() {});
-            }),
-        Text("up"),
-        Expanded(child: Container()),
-        Radio(
-            value: "down",
-            groupValue: _direction,
-            onChanged: (value) {
-              _direction = value!;
-              setState(() {});
-            }),
-        Text("down"),
-        Expanded(child: Container()),
-      ],
     );
   }
 
@@ -159,6 +52,7 @@ class _WavePageState extends State<WavePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
+      extendBody: true,
       appBar: AppBar(
         title: Text('Wave Bar'),
         backgroundColor: Colors.blue,
@@ -166,29 +60,100 @@ class _WavePageState extends State<WavePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            ItemTextWidget(
+            ItemSlideWidget(
               title: 'Height',
-              subWidget: _buildHeight(),
+              value: _height,
+              min: 50.0,
+              max: 100.0,
+              divisions: 50,
+              onChanged: (val) {
+                _height = val;
+                setState(() {});
+              },
             ),
-            ItemTextWidget(
+            ItemSlideWidget(
               title: 'Amplitude',
-              subWidget: _buildAmplitude(),
+              value: _amplitude,
+              min: 0.0,
+              max: 50.0,
+              divisions: 50,
+              onChanged: (val) {
+                _amplitude = val;
+                setState(() {});
+              },
             ),
-            ItemTextWidget(
+            ItemSlideWidget(
               title: 'WaveLength',
-              subWidget: _buildWaveLength(),
+              value: _waveLength,
+              min: 0.0,
+              max: 150.0,
+              divisions: 50,
+              onChanged: (val) {
+                _waveLength = val;
+                setState(() {});
+              },
             ),
-            ItemTextWidget(
+            ItemColorWidget(
               title: 'BackgroundColor',
-              subWidget: _buildColor(),
+              color: _backgroundColor,
+              onTap: () {
+                displayDialog(
+                  "backgroundColor",
+                  _backgroundColor,
+                  (color) {
+                    _backgroundColor = color;
+                    setState(() {});
+                  },
+                );
+              },
             ),
-            ItemTextWidget(
+            ItemSlideWidget(
               title: 'Elevation',
-              subWidget: _buildElevation(),
+              value: _elevation,
+              min: 0.0,
+              max: 50.0,
+              divisions: 50,
+              onChanged: (val) {
+                _elevation = val;
+                setState(() {});
+              },
             ),
-            ItemTextWidget(
+            ItemColorWidget(
+              title: 'ShadowColor',
+              color: _shadowColor,
+              onTap: () {
+                displayDialog(
+                  "shadowColor",
+                  _shadowColor,
+                  (color) {
+                    _shadowColor = color;
+                    setState(() {});
+                  },
+                );
+              },
+            ),
+            ItemRadioWidget(
               title: 'Direction',
-              subWidget: _buildDirection(),
+              items: [
+                RadioData(
+                  title: "up",
+                  value: "up",
+                  groupValue: _direction,
+                  onChanged: (value) {
+                    _direction = value;
+                    setState(() {});
+                  },
+                ),
+                RadioData(
+                  title: "down",
+                  value: "down",
+                  groupValue: _direction,
+                  onChanged: (value) {
+                    _direction = value;
+                    setState(() {});
+                  },
+                ),
+              ],
             ),
             Container(
               height: 1000,
@@ -203,10 +168,11 @@ class _WavePageState extends State<WavePage> {
         waveLength: _waveLength,
         backgroundColor: _backgroundColor,
         elevation: _elevation,
+        shadowColor: _shadowColor,
         direction: _direction == "up"
             ? WaveBottomBarDirection.up
             : WaveBottomBarDirection.down,
-        items: BarItem.items,
+        items: BarItem.normalItems,
         selectedLabelStyle: TextStyle(fontSize: 12, color: Colors.blue),
         unselectedLabelStyle: TextStyle(fontSize: 12, color: Colors.grey),
         onTap: (index) {
