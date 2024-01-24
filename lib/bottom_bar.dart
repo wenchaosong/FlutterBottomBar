@@ -26,15 +26,15 @@ enum WaveBottomBarDirection {
 /// and provide much attrs to config the widget
 class WaveBottomBar extends StatefulWidget {
   /// height of the [WaveBottomBar]
-  final double? height;
+  final double height;
 
   /// amplitude or height of the [WavePainter]
   /// If the value is 0, the wave is gone
-  final double? amplitude;
+  final double amplitude;
 
   /// length of the [WavePainter]
   /// If the value is 0, the wave is gone
-  final double? waveLength;
+  final double waveLength;
 
   /// whole widget background color
   final Color? backgroundColor;
@@ -46,7 +46,7 @@ class WaveBottomBar extends StatefulWidget {
   final Color? shadowColor;
 
   /// the initial active index of the [WaveBottomBar]
-  final int? initialIndex;
+  final int initialIndex;
 
   /// widget list of the [WaveBottomBar]
   /// contains normal icon, active icon and text
@@ -81,12 +81,12 @@ class WaveBottomBar extends StatefulWidget {
   WaveBottomBar({
     Key? key,
     this.height = 56.0,
-    this.amplitude,
-    this.waveLength,
+    this.amplitude = 0,
+    this.waveLength = 0,
     this.backgroundColor,
     this.elevation,
     this.shadowColor,
-    this.initialIndex,
+    this.initialIndex = 0,
     required this.items,
     this.type = WaveBottomBarType.normal,
     this.direction = WaveBottomBarDirection.up,
@@ -127,7 +127,7 @@ class _WaveBottomBarState extends State<WaveBottomBar>
         setState(() {});
       });
 
-    _currentIndex = widget.initialIndex ?? 0;
+    _currentIndex = widget.initialIndex;
     animToIndex();
     setState(() {});
   }
@@ -155,7 +155,7 @@ class _WaveBottomBarState extends State<WaveBottomBar>
             setState(() {});
           },
           child: SizedBox(
-            height: widget.height ?? 0,
+            height: widget.height,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -195,9 +195,9 @@ class _WaveBottomBarState extends State<WaveBottomBar>
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: WavePainter(
-        amplitude: widget.amplitude ?? 0,
-        waveLength: widget.waveLength ?? 0,
-        backgroundColor: widget.backgroundColor ?? Colors.transparent,
+        amplitude: widget.amplitude,
+        waveLength: widget.waveLength,
+        backgroundColor: widget.backgroundColor ?? Colors.white,
         elevation: widget.elevation ?? 0,
         shadowColor: widget.shadowColor ?? Colors.grey.shade300,
         direction: widget.direction,

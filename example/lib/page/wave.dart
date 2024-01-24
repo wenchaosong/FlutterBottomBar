@@ -21,7 +21,7 @@ class _WavePageState extends State<WavePage> {
   double _waveLength = 100.0;
   Color _backgroundColor = Colors.white;
   double _elevation = 15.0;
-  Color _shadowColor = Colors.red;
+  Color _shadowColor = Colors.grey.shade300;
   String _direction = "up";
 
   void displayDialog(

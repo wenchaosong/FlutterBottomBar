@@ -30,9 +30,9 @@ class _CommonPageState extends State<CommonPage> {
         unselectedItemColor: Colors.grey,
         backgroundColor: Colors.white,
         elevation: 10,
+        items: BarItem.normalItems,
         selectedLabelStyle: TextStyle(fontSize: 12),
         unselectedLabelStyle: TextStyle(fontSize: 12),
-        items: BarItem.normalItems,
         onTap: (index) {
           _currentIndex = index;
           setState(() {});
