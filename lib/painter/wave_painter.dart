@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../bottom_bar.dart';
+import '../shape/wave_shape.dart';
 
 class WavePainter extends CustomPainter {
   final _paint = Paint();
   final _shadowPaint = Paint();
+  late WaveShape _shape;
 
   final double amplitude;
   final double waveLength;
@@ -29,39 +31,19 @@ class WavePainter extends CustomPainter {
     _shadowPaint
       ..color = shadowColor
       ..maskFilter = MaskFilter.blur(BlurStyle.outer, elevation);
+    _shape = WaveShape(
+      amplitude: amplitude,
+      waveLength: waveLength,
+      direction: direction,
+      length: length,
+      percentage: percentage,
+    );
   }
 
   @override
   void paint(Canvas canvas, Size size) {
-    Path path = Path();
-
-    var perWidth = size.width / length;
-
-    var begin = size.width * percentage;
-    var middle = begin + perWidth / 2;
-
-    path.lineTo(middle - waveLength / 2, 0);
-
-    path.cubicTo(
-      middle - waveLength / 4,
-      0,
-      middle - waveLength / 4,
-      direction == WaveBottomBarDirection.up ? -amplitude : amplitude,
-      middle,
-      direction == WaveBottomBarDirection.up ? -amplitude : amplitude,
-    );
-    path.cubicTo(
-      middle + waveLength / 4,
-      direction == WaveBottomBarDirection.up ? -amplitude : amplitude,
-      middle + waveLength / 4,
-      0,
-      middle + waveLength / 2,
-      0,
-    );
-
-    path.lineTo(size.width, 0);
-    path.lineTo(size.width, size.height);
-    path.lineTo(0, size.height);
+    var host = Rect.fromLTWH(0, 0, size.width, size.height);
+    var path = _shape.getOuterPath(host, host);
     canvas.drawPath(path, _shadowPaint);
     canvas.drawPath(path, _paint);
   }

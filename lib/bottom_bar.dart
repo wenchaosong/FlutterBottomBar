@@ -134,26 +134,18 @@ class _WaveBottomBarState extends State<WaveBottomBar>
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: widget.height ?? 0,
-      child: Stack(
-        children: [
-          CustomPaint(
-            size: Size(MediaQuery.of(context).size.width, widget.height ?? 0),
-            painter: WavePainter(
-              amplitude: widget.amplitude ?? 0,
-              waveLength: widget.waveLength ?? 0,
-              backgroundColor: widget.backgroundColor ?? Colors.transparent,
-              elevation: widget.elevation ?? 0,
-              shadowColor: widget.shadowColor ?? Colors.grey.shade300,
-              direction: widget.direction,
-              length: widget.items.length,
-              percentage: _animCon.value,
-            ),
-          ),
-          Row(children: createChild()),
-        ],
+    return CustomPaint(
+      painter: WavePainter(
+        amplitude: widget.amplitude ?? 0,
+        waveLength: widget.waveLength ?? 0,
+        backgroundColor: widget.backgroundColor ?? Colors.transparent,
+        elevation: widget.elevation ?? 0,
+        shadowColor: widget.shadowColor ?? Colors.grey.shade300,
+        direction: widget.direction,
+        length: widget.items.length,
+        percentage: _animCon.value,
       ),
+      child: Row(children: createChild()),
     );
   }
 }

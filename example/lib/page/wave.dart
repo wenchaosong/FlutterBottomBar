@@ -14,7 +14,7 @@ class WavePage extends StatefulWidget {
 
 class _WavePageState extends State<WavePage> {
   double _height = 60.0;
-  double _amplitude = 30.0;
+  double _amplitude = 35.0;
   double _waveLength = 100.0;
   Color _backgroundColor = Colors.white;
   double _elevation = 15.0;
@@ -189,6 +189,10 @@ class _WavePageState extends State<WavePage> {
             ItemTextWidget(
               title: 'Direction',
               subWidget: _buildDirection(),
+            ),
+            Container(
+              height: 1000,
+              color: Colors.grey.shade500,
             ),
           ],
         ),
