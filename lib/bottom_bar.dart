@@ -139,38 +139,51 @@ class _WaveBottomBarState extends State<WaveBottomBar>
   }
 
   /// the widget list of bottom items, contains icon and text
-  /// TODO set the icon
   List<Widget> createItem() {
     final List<Widget> child = [];
     for (var i = 0; i < widget.items.length; i++) {
+      if (_currentIndex == i) {
+        child.add(
+          Expanded(
+            child: InkWell(
+              onTap: () {
+                widget.onTap(i);
+              },
+              child: Column(
+                children: [
+                  widget.items[i].activeIcon,
+                ],
+              ),
+            ),
+          ),
+        );
+        continue;
+      }
       child.add(Expanded(
         child: InkWell(
           onTap: () {
             widget.onTap(i);
-            if (_currentIndex == i) {
-              return;
-            }
             _currentIndex = i;
             animToIndex();
             setState(() {});
           },
-          child: SizedBox(
-            height: widget.height,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _currentIndex == i
-                    ? widget.items[i].activeIcon
-                    : widget.items[i].icon,
-                SizedBox(height: widget.labelMargin),
-                Text(
-                  "${widget.items[i].label}",
-                  style: _currentIndex == i
-                      ? widget.selectedLabelStyle
-                      : widget.unselectedLabelStyle,
+          child: Column(
+            children: [
+              SizedBox(height: widget.amplitude),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    widget.items[i].icon,
+                    SizedBox(height: widget.labelMargin),
+                    Text(
+                      "${widget.items[i].label}",
+                      style: widget.unselectedLabelStyle,
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ));
@@ -193,18 +206,21 @@ class _WaveBottomBarState extends State<WaveBottomBar>
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: WavePainter(
-        amplitude: widget.amplitude,
-        waveLength: widget.waveLength,
-        backgroundColor: widget.backgroundColor ?? Colors.white,
-        elevation: widget.elevation ?? 0,
-        shadowColor: widget.shadowColor ?? Colors.grey.shade300,
-        direction: widget.direction,
-        barCount: widget.items.length,
-        percentage: _animCon.value,
+    return SizedBox(
+      height: widget.height + widget.amplitude,
+      child: CustomPaint(
+        painter: WavePainter(
+          amplitude: widget.amplitude,
+          waveLength: widget.waveLength,
+          backgroundColor: widget.backgroundColor ?? Colors.white,
+          elevation: widget.elevation ?? 0,
+          shadowColor: widget.shadowColor ?? Colors.grey.shade300,
+          direction: widget.direction,
+          barCount: widget.items.length,
+          percentage: _animCon.value,
+        ),
+        child: Row(children: createItem()),
       ),
-      child: Row(children: createItem()),
     );
   }
 }
