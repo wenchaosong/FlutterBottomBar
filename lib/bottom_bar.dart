@@ -52,6 +52,9 @@ class WaveBottomBar extends StatefulWidget {
   /// contains normal icon, active icon and text
   final List<BottomNavigationBarItem> items;
 
+  /// widget inside wave only can be configured when [type] is fixed
+  final Widget? fixedWidget;
+
   /// type of the [WaveBottomBar]
   /// See [WaveBottomBarType] for more information
   final WaveBottomBarType type;
@@ -75,6 +78,12 @@ class WaveBottomBar extends StatefulWidget {
   /// normal item text style
   final TextStyle unselectedLabelStyle;
 
+  /// whether the labels are shown for the selected [BottomNavigationBarItem].
+  final bool? showSelectedLabels;
+
+  /// whether the labels are shown for the unselected [BottomNavigationBarItem]s.
+  final bool? showUnselectedLabels;
+
   /// called when one of the [items] is tapped.
   final Function(int index) onTap;
 
@@ -88,6 +97,7 @@ class WaveBottomBar extends StatefulWidget {
     this.shadowColor,
     this.initialIndex = 0,
     required this.items,
+    this.fixedWidget,
     this.type = WaveBottomBarType.normal,
     this.direction = WaveBottomBarDirection.up,
     this.labelMargin = 3,
@@ -101,10 +111,16 @@ class WaveBottomBar extends StatefulWidget {
       fontSize: 12,
       color: Colors.grey,
     ),
+    this.showSelectedLabels,
+    this.showUnselectedLabels,
     required this.onTap,
   }) : super(key: key) {
     if (type == WaveBottomBarType.fixed) {
       assert(items.length % 2 != 0);
+      assert(fixedWidget != null);
+    }
+    if (fixedWidget != null) {
+      assert(type == WaveBottomBarType.fixed);
     }
   }
 
@@ -138,25 +154,12 @@ class _WaveBottomBarState extends State<WaveBottomBar>
     super.dispose();
   }
 
-  /// the widget list of bottom items, contains icon and text
-  List<Widget> createItem() {
+  /// the normal widget list of bottom items, contains icon and text
+  List<Widget> createNormalItem() {
     final List<Widget> child = [];
     for (var i = 0; i < widget.items.length; i++) {
       if (_currentIndex == i) {
-        child.add(
-          Expanded(
-            child: InkWell(
-              onTap: () {
-                widget.onTap(i);
-              },
-              child: Column(
-                children: [
-                  widget.items[i].activeIcon,
-                ],
-              ),
-            ),
-          ),
-        );
+        child.add(Expanded(child: Container()));
         continue;
       }
       child.add(Expanded(
@@ -168,20 +171,13 @@ class _WaveBottomBarState extends State<WaveBottomBar>
             setState(() {});
           },
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: widget.amplitude),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    widget.items[i].icon,
-                    SizedBox(height: widget.labelMargin),
-                    Text(
-                      "${widget.items[i].label}",
-                      style: widget.unselectedLabelStyle,
-                    ),
-                  ],
-                ),
+              widget.items[i].icon,
+              SizedBox(height: widget.labelMargin),
+              Text(
+                "${widget.items[i].label}",
+                style: widget.unselectedLabelStyle,
               ),
             ],
           ),
@@ -189,6 +185,14 @@ class _WaveBottomBarState extends State<WaveBottomBar>
       ));
     }
     return child;
+  }
+
+  /// the active item
+  Widget createActiveItem() {
+    if (widget.type == WaveBottomBarType.normal) {
+      return Container();
+    }
+    return Container();
   }
 
   /// start anim to active item, pass the percentage to the wave
@@ -208,18 +212,35 @@ class _WaveBottomBarState extends State<WaveBottomBar>
   Widget build(BuildContext context) {
     return SizedBox(
       height: widget.height + widget.amplitude,
-      child: CustomPaint(
-        painter: WavePainter(
-          amplitude: widget.amplitude,
-          waveLength: widget.waveLength,
-          backgroundColor: widget.backgroundColor ?? Colors.white,
-          elevation: widget.elevation ?? 0,
-          shadowColor: widget.shadowColor ?? Colors.grey.shade300,
-          direction: widget.direction,
-          barCount: widget.items.length,
-          percentage: _animCon.value,
-        ),
-        child: Row(children: createItem()),
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          CustomPaint(
+            painter: WavePainter(
+              amplitude: widget.amplitude,
+              waveLength: widget.waveLength,
+              backgroundColor: widget.backgroundColor ?? Colors.white,
+              elevation: widget.elevation ?? 0,
+              shadowColor: widget.shadowColor ?? Colors.grey.shade300,
+              direction: widget.direction,
+              barCount: widget.items.length,
+              percentage: _animCon.value,
+            ),
+            child: SizedBox(
+              height: widget.height,
+              child: Row(children: createNormalItem()),
+            ),
+          ),
+          Positioned(
+            left: 0,
+            top: 0,
+            child: Container(
+              width: 50,
+              height: 50,
+              color: Colors.red,
+            ),
+          ),
+        ],
       ),
     );
   }

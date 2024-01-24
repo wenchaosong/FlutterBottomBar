@@ -172,7 +172,7 @@ class _WavePageState extends State<WavePage> {
         direction: _direction == "up"
             ? WaveBottomBarDirection.up
             : WaveBottomBarDirection.down,
-        items: BarItem.normalItems,
+        items: BarItem.items,
         selectedLabelStyle: TextStyle(fontSize: 12, color: Colors.blue),
         unselectedLabelStyle: TextStyle(fontSize: 12, color: Colors.grey),
         onTap: (index) {

@@ -49,7 +49,7 @@ class WavePainter extends CustomPainter {
 
     final Path path = Path();
 
-    path.moveTo(0, amplitude);
+    path.moveTo(0, 0);
 
     // each item width
     final perWidth = size.width / barCount;
@@ -60,30 +60,30 @@ class WavePainter extends CustomPainter {
 
     // actual begin position is
     // active item middle position - half the wave length
-    path.lineTo(middle - waveLength / 2, amplitude);
+    path.lineTo(middle - waveLength / 2, 0);
 
     // the left wave
     path.cubicTo(
       middle - waveLength / 4,
-      amplitude,
+      0,
       middle - waveLength / 4,
-      direction == WaveBottomBarDirection.up ? 0 : amplitude * 2,
+      direction == WaveBottomBarDirection.up ? -amplitude : amplitude,
       middle,
-      direction == WaveBottomBarDirection.up ? 0 : amplitude * 2,
+      direction == WaveBottomBarDirection.up ? -amplitude : amplitude,
     );
 
     // the right wave, the end position is
     // active item middle position + half the wave length
     path.cubicTo(
       middle + waveLength / 4,
-      direction == WaveBottomBarDirection.up ? 0 : amplitude * 2,
+      direction == WaveBottomBarDirection.up ? -amplitude : amplitude,
       middle + waveLength / 4,
-      amplitude,
+      0,
       middle + waveLength / 2,
-      amplitude,
+      0,
     );
 
-    path.lineTo(size.width, amplitude);
+    path.lineTo(size.width, 0);
     path.lineTo(size.width, size.height);
     path.lineTo(0, size.height);
 

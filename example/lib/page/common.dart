@@ -22,7 +22,7 @@ class _CommonPageState extends State<CommonPage> {
       ),
       body: Container(
         alignment: Alignment.center,
-        child: Text("${BarItem.normalItems[_currentIndex].label}"),
+        child: Text("${BarItem.items[_currentIndex].label}"),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -30,7 +30,7 @@ class _CommonPageState extends State<CommonPage> {
         unselectedItemColor: Colors.grey,
         backgroundColor: Colors.white,
         elevation: 10,
-        items: BarItem.normalItems,
+        items: BarItem.items,
         selectedLabelStyle: TextStyle(fontSize: 12),
         unselectedLabelStyle: TextStyle(fontSize: 12),
         onTap: (index) {
