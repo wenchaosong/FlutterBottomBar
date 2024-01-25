@@ -25,42 +25,64 @@ class _UsePageState extends State<UsePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade400,
       appBar: AppBar(
         title: Text('Use'),
         backgroundColor: Colors.blue,
       ),
-      body: Stack(
-        children: [
-          Container(
-            color: getRandomColor(),
-            alignment: Alignment.center,
-            child: Text(
-              "This is test content bg",
-              style: TextStyle(color: Colors.grey.shade500),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: 50),
+            WaveBottomBar(
+              items: BarItem.simpleUse,
+              onTap: (index) {
+                debugPrint("$index");
+              },
             ),
-          ),
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(height: 50),
-                WaveBottomBar(
-                  items: BarItem.simpleUse,
-                  onTap: (index) {
-                    debugPrint("$index");
-                  },
+            SizedBox(height: 10),
+            WaveBottomBar(
+              items: BarItem.simpleUse,
+              fixedWidget: ClipOval(
+                child: Container(
+                  width: 45,
+                  height: 45,
+                  color: Colors.red,
+                  alignment: Alignment.center,
+                  child: Icon(Icons.refresh, size: 35, color: Colors.white),
                 ),
-                SizedBox(height: 10),
-                WaveBottomBar(
-                  items: BarItem.fixed,
-                  type: WaveBottomBarType.fixed,
-                  onTap: (index) {
-                    debugPrint("$index");
-                  },
-                ),
-              ],
+              ),
+              onTap: (index) {
+                debugPrint("$index");
+              },
             ),
-          ),
-        ],
+            SizedBox(height: 10),
+            WaveBottomBar(
+              items: BarItem.fixed,
+              type: WaveBottomBarType.fixed,
+              onTap: (index) {
+                debugPrint("$index");
+              },
+            ),
+            SizedBox(height: 10),
+            WaveBottomBar(
+              items: BarItem.fixed,
+              fixedWidget: ClipOval(
+                child: Container(
+                  width: 45,
+                  height: 45,
+                  color: Colors.red,
+                  alignment: Alignment.center,
+                  child: Icon(Icons.add, size: 35, color: Colors.white),
+                ),
+              ),
+              type: WaveBottomBarType.fixed,
+              onTap: (index) {
+                debugPrint("$index");
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

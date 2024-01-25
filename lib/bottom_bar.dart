@@ -63,11 +63,8 @@ class WaveBottomBar extends StatefulWidget {
   /// See [WaveBottomBarDirection] for more information
   final WaveBottomBarDirection direction;
 
-  /// the margin between active label and icon
-  final double selectedLabelMargin;
-
-  /// the margin between normal label and icon
-  final double unselectedLabelMargin;
+  /// the margin between label and icon
+  final double labelMargin;
 
   /// the margin between the active item and top of the wave
   final double activeTopMargin;
@@ -106,8 +103,7 @@ class WaveBottomBar extends StatefulWidget {
     this.fixedWidget,
     this.type = WaveBottomBarType.normal,
     this.direction = WaveBottomBarDirection.up,
-    this.selectedLabelMargin = 8,
-    this.unselectedLabelMargin = 3,
+    this.labelMargin = 3,
     this.activeTopMargin = 5,
     this.duration = const Duration(milliseconds: 50),
     this.curve = Curves.linear,
@@ -169,22 +165,33 @@ class _WaveBottomBarState extends State<WaveBottomBar>
       if (widget.type == WaveBottomBarType.fixed) {
         if (i == widget.items.length ~/ 2) {
           child.add(Expanded(
-            //TODO
-            child: InkWell(
-              onTap: () {
-                widget.onTap(i);
-                _currentIndex = i;
-                animToIndex();
-                setState(() {});
-              },
-              child: SizedBox(
-                height: widget.height + widget.amplitude,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    widget.items[i].icon,
-                  ],
-                ),
+            child: Container(
+              height: widget.height + widget.amplitude,
+              margin: EdgeInsets.only(top: widget.activeTopMargin),
+              alignment: Alignment.center,
+              child: InkWell(
+                onTap: () {
+                  widget.onTap(i);
+                  _currentIndex = i;
+                  animToIndex();
+                  setState(() {});
+                },
+                child: widget.fixedWidget == null
+                    ? Column(
+                        children: [
+                          widget.items[i].icon,
+                          //TODO how to set same margin with normal item
+                          const SizedBox(height: 4.5),
+                          if (widget.showUnselectedLabel ?? true)
+                            SizedBox(height: widget.labelMargin),
+                          if (widget.showUnselectedLabel ?? true)
+                            Text(
+                              "${widget.items[i].label}",
+                              style: widget.unselectedLabelStyle,
+                            ),
+                        ],
+                      )
+                    : Column(children: [widget.fixedWidget!]),
               ),
             ),
           ));
@@ -204,7 +211,7 @@ class _WaveBottomBarState extends State<WaveBottomBar>
                   children: [
                     widget.items[i].icon,
                     if (widget.showUnselectedLabel ?? true)
-                      SizedBox(height: widget.unselectedLabelMargin),
+                      SizedBox(height: widget.labelMargin),
                     if (widget.showUnselectedLabel ?? true)
                       Text(
                         "${widget.items[i].label}",
@@ -232,7 +239,7 @@ class _WaveBottomBarState extends State<WaveBottomBar>
                 children: [
                   widget.items[i].icon,
                   if (widget.showUnselectedLabel ?? true)
-                    SizedBox(height: widget.unselectedLabelMargin),
+                    SizedBox(height: widget.labelMargin),
                   if (widget.showUnselectedLabel ?? true)
                     Text(
                       "${widget.items[i].label}",
@@ -254,7 +261,7 @@ class _WaveBottomBarState extends State<WaveBottomBar>
       if (_currentIndex == widget.items.length ~/ 2) {
         return Positioned(
           left: perWidth * _currentIndex,
-          bottom: 0,
+          top: widget.activeTopMargin,
           child: Container(
             width: perWidth,
             alignment: Alignment.center,
@@ -262,19 +269,22 @@ class _WaveBottomBarState extends State<WaveBottomBar>
               onTap: () {
                 widget.onTap(_currentIndex);
               },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  widget.items[_currentIndex].activeIcon,
-                  if (widget.showSelectedLabel ?? true)
-                    SizedBox(height: widget.unselectedLabelMargin),
-                  if (widget.showSelectedLabel ?? true)
-                    Text(
-                      "${widget.items[_currentIndex].label}",
-                      style: widget.selectedLabelStyle,
-                    ),
-                ],
-              ),
+              child: widget.fixedWidget == null
+                  ? Column(
+                      children: [
+                        widget.items[_currentIndex].activeIcon,
+                        //TODO how to set same margin with normal item
+                        const SizedBox(height: 4.5),
+                        if (widget.showSelectedLabel ?? true)
+                          SizedBox(height: widget.labelMargin),
+                        if (widget.showSelectedLabel ?? true)
+                          Text(
+                            "${widget.items[_currentIndex].label}",
+                            style: widget.selectedLabelStyle,
+                          ),
+                      ],
+                    )
+                  : Column(children: [widget.fixedWidget!]),
             ),
           ),
         );
@@ -294,7 +304,7 @@ class _WaveBottomBarState extends State<WaveBottomBar>
                 children: [
                   widget.items[_currentIndex].activeIcon,
                   if (widget.showSelectedLabel ?? true)
-                    SizedBox(height: widget.unselectedLabelMargin),
+                    SizedBox(height: widget.labelMargin),
                   if (widget.showSelectedLabel ?? true)
                     Text(
                       "${widget.items[_currentIndex].label}",
@@ -321,8 +331,10 @@ class _WaveBottomBarState extends State<WaveBottomBar>
                 ? Column(
                     children: [
                       widget.items[_currentIndex].activeIcon,
+                      //TODO how to set same margin with normal item
+                      const SizedBox(height: 4.5),
                       if (widget.showSelectedLabel ?? true)
-                        SizedBox(height: widget.selectedLabelMargin),
+                        SizedBox(height: widget.labelMargin),
                       if (widget.showSelectedLabel ?? true)
                         Text(
                           "${widget.items[_currentIndex].label}",
@@ -330,11 +342,7 @@ class _WaveBottomBarState extends State<WaveBottomBar>
                         ),
                     ],
                   )
-                : Column(
-                    children: [
-                      widget.fixedWidget!,
-                    ],
-                  ),
+                : Column(children: [widget.fixedWidget!]),
           ),
         ),
       );
