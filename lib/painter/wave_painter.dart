@@ -88,7 +88,10 @@ class WavePainter extends CustomPainter {
     path.lineTo(0, size.height);
 
     canvas.drawPath(path, pathPaint);
-    canvas.drawPath(path, shadowPaint);
+    if (elevation != 0) {
+      // because elevation is 0 will only draw shadow
+      canvas.drawPath(path, shadowPaint);
+    }
   }
 
   @override

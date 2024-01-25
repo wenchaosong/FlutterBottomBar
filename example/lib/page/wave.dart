@@ -22,7 +22,13 @@ class _WavePageState extends State<WavePage> {
   Color _backgroundColor = Colors.white;
   double _elevation = 15.0;
   Color _shadowColor = Colors.grey.shade300;
+  String _showFixedWidget = "false";
   String _direction = "up";
+  double _labelMargin = 3.0;
+  double _topMargin = 5.0;
+  int _duration = 60;
+  String _showSelectedLabel = "true";
+  String _showUnselectedLabel = "true";
 
   void displayDialog(
     String title,
@@ -133,6 +139,29 @@ class _WavePageState extends State<WavePage> {
               },
             ),
             ItemRadioWidget(
+              title: 'ShowFixedWidget',
+              items: [
+                RadioData(
+                  title: "true",
+                  value: "true",
+                  groupValue: _showFixedWidget,
+                  onChanged: (value) {
+                    _showFixedWidget = value;
+                    setState(() {});
+                  },
+                ),
+                RadioData(
+                  title: "false",
+                  value: "false",
+                  groupValue: _showFixedWidget,
+                  onChanged: (value) {
+                    _showFixedWidget = value;
+                    setState(() {});
+                  },
+                ),
+              ],
+            ),
+            ItemRadioWidget(
               title: 'Direction',
               items: [
                 RadioData(
@@ -155,8 +184,87 @@ class _WavePageState extends State<WavePage> {
                 ),
               ],
             ),
+            ItemSlideWidget(
+              title: 'LabelMargin',
+              value: _labelMargin,
+              min: 0.0,
+              max: 20.0,
+              divisions: 20,
+              onChanged: (val) {
+                _labelMargin = val;
+                setState(() {});
+              },
+            ),
+            ItemSlideWidget(
+              title: 'TopMargin',
+              value: _topMargin,
+              min: 0.0,
+              max: 50.0,
+              divisions: 50,
+              onChanged: (val) {
+                _topMargin = val;
+                setState(() {});
+              },
+            ),
+            ItemSlideWidget(
+              title: 'Duration',
+              value: _duration.toDouble(),
+              min: 10.0,
+              max: 960.0,
+              divisions: 50,
+              onChanged: (val) {
+                _duration = val.toInt();
+                setState(() {});
+              },
+            ),
+            ItemRadioWidget(
+              title: 'ShowSelectLabel',
+              items: [
+                RadioData(
+                  title: "true",
+                  value: "true",
+                  groupValue: _showSelectedLabel,
+                  onChanged: (value) {
+                    _showSelectedLabel = value;
+                    setState(() {});
+                  },
+                ),
+                RadioData(
+                  title: "false",
+                  value: "false",
+                  groupValue: _showSelectedLabel,
+                  onChanged: (value) {
+                    _showSelectedLabel = value;
+                    setState(() {});
+                  },
+                ),
+              ],
+            ),
+            ItemRadioWidget(
+              title: 'ShowUnselectLabel',
+              items: [
+                RadioData(
+                  title: "true",
+                  value: "true",
+                  groupValue: _showUnselectedLabel,
+                  onChanged: (value) {
+                    _showUnselectedLabel = value;
+                    setState(() {});
+                  },
+                ),
+                RadioData(
+                  title: "false",
+                  value: "false",
+                  groupValue: _showUnselectedLabel,
+                  onChanged: (value) {
+                    _showUnselectedLabel = value;
+                    setState(() {});
+                  },
+                ),
+              ],
+            ),
             Container(
-              height: 1000,
+              height: 500,
               color: Colors.grey.shade500,
             ),
           ],
@@ -169,12 +277,25 @@ class _WavePageState extends State<WavePage> {
         backgroundColor: _backgroundColor,
         elevation: _elevation,
         shadowColor: _shadowColor,
+        items: BarItem.items,
+        fixedWidget: _showFixedWidget == "true"
+            ? Container(
+                width: 50,
+                height: 50,
+                color: Colors.red,
+              )
+            : null,
         direction: _direction == "up"
             ? WaveBottomBarDirection.up
             : WaveBottomBarDirection.down,
-        items: BarItem.items,
+        labelIconMargin: _labelMargin,
+        activeTopMargin: _topMargin,
+        duration: Duration(milliseconds: _duration),
+        curve: Curves.linear,
         selectedLabelStyle: TextStyle(fontSize: 12, color: Colors.blue),
         unselectedLabelStyle: TextStyle(fontSize: 12, color: Colors.grey),
+        showSelectedLabels: _showSelectedLabel == "true" ? true : false,
+        showUnselectedLabels: _showUnselectedLabel == "true" ? true : false,
         onTap: (index) {
           debugPrint("$index");
         },

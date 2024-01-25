@@ -64,7 +64,10 @@ class WaveBottomBar extends StatefulWidget {
   final WaveBottomBarDirection direction;
 
   /// the margin between label and icon
-  final double labelMargin;
+  final double labelIconMargin;
+
+  /// the margin between the active item and top of the wave
+  final double activeTopMargin;
 
   /// the wave move anim duration
   final Duration duration;
@@ -100,7 +103,8 @@ class WaveBottomBar extends StatefulWidget {
     this.fixedWidget,
     this.type = WaveBottomBarType.normal,
     this.direction = WaveBottomBarDirection.up,
-    this.labelMargin = 3,
+    this.labelIconMargin = 3,
+    this.activeTopMargin = 5,
     this.duration = const Duration(milliseconds: 50),
     this.curve = Curves.linear,
     this.selectedLabelStyle = const TextStyle(
@@ -117,10 +121,6 @@ class WaveBottomBar extends StatefulWidget {
   }) : super(key: key) {
     if (type == WaveBottomBarType.fixed) {
       assert(items.length % 2 != 0);
-      assert(fixedWidget != null);
-    }
-    if (fixedWidget != null) {
-      assert(type == WaveBottomBarType.fixed);
     }
   }
 
@@ -174,11 +174,13 @@ class _WaveBottomBarState extends State<WaveBottomBar>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               widget.items[i].icon,
-              SizedBox(height: widget.labelMargin),
-              Text(
-                "${widget.items[i].label}",
-                style: widget.unselectedLabelStyle,
-              ),
+              if (widget.showUnselectedLabels ?? true)
+                SizedBox(height: widget.labelIconMargin),
+              if (widget.showUnselectedLabels ?? true)
+                Text(
+                  "${widget.items[i].label}",
+                  style: widget.unselectedLabelStyle,
+                ),
             ],
           ),
         ),
@@ -189,16 +191,42 @@ class _WaveBottomBarState extends State<WaveBottomBar>
 
   /// the active item
   Widget createActiveItem() {
-    if (widget.type == WaveBottomBarType.normal) {
-      return Container();
+    if (widget.fixedWidget == null) {
+      return InkWell(
+        onTap: () {
+          widget.onTap(_currentIndex);
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            widget.items[_currentIndex].activeIcon,
+            if (widget.showSelectedLabels ?? true)
+              SizedBox(height: widget.labelIconMargin),
+            if (widget.showSelectedLabels ?? true)
+              Text(
+                "${widget.items[_currentIndex].label}",
+                style: widget.selectedLabelStyle,
+              ),
+          ],
+        ),
+      );
+    } else {
+      return InkWell(
+        onTap: () {
+          widget.onTap(_currentIndex);
+        },
+        child: widget.fixedWidget!,
+      );
     }
-    return Container();
   }
 
   /// start anim to active item, pass the percentage to the wave
   void animToIndex() {
     if (widget.type == WaveBottomBarType.fixed) {
-      _animCon.animateTo(0.5);
+      _animCon.animateTo(
+        (widget.items.length ~/ 2) / widget.items.length,
+        duration: const Duration(milliseconds: 10),
+      );
       return;
     }
     _animCon.animateTo(
@@ -210,6 +238,8 @@ class _WaveBottomBarState extends State<WaveBottomBar>
 
   @override
   Widget build(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
+    var perWidth = width / widget.items.length;
     return SizedBox(
       height: widget.height + widget.amplitude,
       child: Stack(
@@ -232,12 +262,12 @@ class _WaveBottomBarState extends State<WaveBottomBar>
             ),
           ),
           Positioned(
-            left: 0,
-            top: 0,
+            left: perWidth * _currentIndex,
+            top: widget.activeTopMargin,
             child: Container(
-              width: 50,
-              height: 50,
-              color: Colors.red,
+              width: perWidth,
+              alignment: Alignment.center,
+              child: createActiveItem(),
             ),
           ),
         ],

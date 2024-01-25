@@ -14,7 +14,14 @@ class ItemRadioWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> sub = [];
-    sub.add(SizedBox(width: 120, child: Text(title)));
+    sub.add(SizedBox(
+      width: 120,
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.centerLeft,
+        child: Text(title),
+      ),
+    ));
     sub.add(Expanded(child: Container()));
     items.forEach((element) {
       sub.add(

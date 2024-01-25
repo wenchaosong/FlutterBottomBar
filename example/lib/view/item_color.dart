@@ -23,7 +23,11 @@ class ItemColorWidget extends StatelessWidget {
         children: [
           SizedBox(
             width: 120,
-            child: Text(title),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(title),
+            ),
           ),
           Expanded(
             child: InkWell(
