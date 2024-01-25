@@ -33,7 +33,7 @@ class _UsePageState extends State<UsePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 50),
+            SizedBox(height: 30),
             WaveBottomBar(
               items: BarItem.simpleUse,
               onTap: (index) {
@@ -77,6 +77,30 @@ class _UsePageState extends State<UsePage> {
                 ),
               ),
               type: WaveBottomBarType.fixed,
+              onTap: (index) {
+                debugPrint("$index");
+              },
+            ),
+            SizedBox(height: 10),
+            WaveBottomBar(
+              amplitude: 42,
+              waveLength: 120,
+              activeTopMargin: 34,
+              items: BarItem.simpleUse,
+              direction: WaveBottomBarDirection.down,
+              showSelectedLabel: false,
+              onTap: (index) {
+                debugPrint("$index");
+              },
+            ),
+            SizedBox(height: 10),
+            WaveBottomBar(
+              amplitude: 42,
+              waveLength: 120,
+              activeTopMargin: 34,
+              items: BarItem.fixed,
+              type: WaveBottomBarType.fixed,
+              direction: WaveBottomBarDirection.down,
               onTap: (index) {
                 debugPrint("$index");
               },
