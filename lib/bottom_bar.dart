@@ -63,8 +63,11 @@ class WaveBottomBar extends StatefulWidget {
   /// See [WaveBottomBarDirection] for more information
   final WaveBottomBarDirection direction;
 
-  /// the margin between label and icon
-  final double labelIconMargin;
+  /// the margin between active label and icon
+  final double selectedLabelMargin;
+
+  /// the margin between normal label and icon
+  final double unselectedLabelMargin;
 
   /// the margin between the active item and top of the wave
   final double activeTopMargin;
@@ -82,10 +85,10 @@ class WaveBottomBar extends StatefulWidget {
   final TextStyle unselectedLabelStyle;
 
   /// whether the labels are shown for the selected [BottomNavigationBarItem].
-  final bool? showSelectedLabels;
+  final bool? showSelectedLabel;
 
   /// whether the labels are shown for the unselected [BottomNavigationBarItem]s.
-  final bool? showUnselectedLabels;
+  final bool? showUnselectedLabel;
 
   /// called when one of the [items] is tapped.
   final Function(int index) onTap;
@@ -93,8 +96,8 @@ class WaveBottomBar extends StatefulWidget {
   WaveBottomBar({
     Key? key,
     this.height = 56.0,
-    this.amplitude = 0,
-    this.waveLength = 0,
+    this.amplitude = 25,
+    this.waveLength = 100,
     this.backgroundColor,
     this.elevation,
     this.shadowColor,
@@ -103,7 +106,8 @@ class WaveBottomBar extends StatefulWidget {
     this.fixedWidget,
     this.type = WaveBottomBarType.normal,
     this.direction = WaveBottomBarDirection.up,
-    this.labelIconMargin = 3,
+    this.selectedLabelMargin = 10,
+    this.unselectedLabelMargin = 3,
     this.activeTopMargin = 5,
     this.duration = const Duration(milliseconds: 50),
     this.curve = Curves.linear,
@@ -115,8 +119,8 @@ class WaveBottomBar extends StatefulWidget {
       fontSize: 12,
       color: Colors.grey,
     ),
-    this.showSelectedLabels,
-    this.showUnselectedLabels,
+    this.showSelectedLabel,
+    this.showUnselectedLabel,
     required this.onTap,
   }) : super(key: key) {
     if (type == WaveBottomBarType.fixed) {
@@ -174,9 +178,9 @@ class _WaveBottomBarState extends State<WaveBottomBar>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               widget.items[i].icon,
-              if (widget.showUnselectedLabels ?? true)
-                SizedBox(height: widget.labelIconMargin),
-              if (widget.showUnselectedLabels ?? true)
+              if (widget.showUnselectedLabel ?? true)
+                SizedBox(height: widget.unselectedLabelMargin),
+              if (widget.showUnselectedLabel ?? true)
                 Text(
                   "${widget.items[i].label}",
                   style: widget.unselectedLabelStyle,
@@ -200,9 +204,9 @@ class _WaveBottomBarState extends State<WaveBottomBar>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             widget.items[_currentIndex].activeIcon,
-            if (widget.showSelectedLabels ?? true)
-              SizedBox(height: widget.labelIconMargin),
-            if (widget.showSelectedLabels ?? true)
+            if (widget.showSelectedLabel ?? true)
+              SizedBox(height: widget.selectedLabelMargin),
+            if (widget.showSelectedLabel ?? true)
               Text(
                 "${widget.items[_currentIndex].label}",
                 style: widget.selectedLabelStyle,

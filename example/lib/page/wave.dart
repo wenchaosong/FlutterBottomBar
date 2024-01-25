@@ -1,3 +1,4 @@
+import 'package:bottom_bar_example/view/item_select.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bottom_bar/bottom_bar.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -16,17 +17,33 @@ class WavePage extends StatefulWidget {
 }
 
 class _WavePageState extends State<WavePage> {
-  double _height = 60.0;
-  double _amplitude = 35.0;
+  final List<Curve> _curveList = [
+    Curves.linear,
+    Curves.decelerate,
+    Curves.easeIn,
+    Curves.easeOut,
+    Curves.fastOutSlowIn,
+    Curves.slowMiddle,
+    Curves.bounceIn,
+    Curves.bounceOut,
+    Curves.bounceInOut,
+    Curves.elasticIn,
+    Curves.elasticOut,
+  ];
+
+  double _height = 56.0;
+  double _amplitude = 25.0;
   double _waveLength = 100.0;
   Color _backgroundColor = Colors.white;
   double _elevation = 15.0;
   Color _shadowColor = Colors.grey.shade300;
   String _showFixedWidget = "false";
   String _direction = "up";
-  double _labelMargin = 3.0;
+  double _selectLabelMargin = 8.0;
+  double _unselectLabelMargin = 3.0;
   double _topMargin = 5.0;
-  int _duration = 60;
+  int _duration = 500;
+  Curve _curve = Curves.elasticOut;
   String _showSelectedLabel = "true";
   String _showUnselectedLabel = "true";
 
@@ -41,7 +58,7 @@ class _WavePageState extends State<WavePage> {
         return AlertDialog(
           title: Text('Select $title color'),
           content: SingleChildScrollView(
-            child: BlockPicker(
+            child: MaterialPicker(
               pickerColor: color,
               onColorChanged: (val) {
                 onColorChanged(val);
@@ -185,13 +202,24 @@ class _WavePageState extends State<WavePage> {
               ],
             ),
             ItemSlideWidget(
-              title: 'LabelMargin',
-              value: _labelMargin,
+              title: 'SelectLabelMargin',
+              value: _selectLabelMargin,
               min: 0.0,
               max: 20.0,
               divisions: 20,
               onChanged: (val) {
-                _labelMargin = val;
+                _selectLabelMargin = val;
+                setState(() {});
+              },
+            ),
+            ItemSlideWidget(
+              title: 'UnselectLabelMargin',
+              value: _unselectLabelMargin,
+              min: 0.0,
+              max: 20.0,
+              divisions: 20,
+              onChanged: (val) {
+                _unselectLabelMargin = val;
                 setState(() {});
               },
             ),
@@ -214,6 +242,15 @@ class _WavePageState extends State<WavePage> {
               divisions: 50,
               onChanged: (val) {
                 _duration = val.toInt();
+                setState(() {});
+              },
+            ),
+            ItemSelectWidget(
+              title: "Curve",
+              initCurve: _curve,
+              curveList: _curveList,
+              onSelect: (val) {
+                _curve = val!;
                 setState(() {});
               },
             ),
@@ -263,10 +300,6 @@ class _WavePageState extends State<WavePage> {
                 ),
               ],
             ),
-            Container(
-              height: 500,
-              color: Colors.grey.shade500,
-            ),
           ],
         ),
       ),
@@ -277,7 +310,7 @@ class _WavePageState extends State<WavePage> {
         backgroundColor: _backgroundColor,
         elevation: _elevation,
         shadowColor: _shadowColor,
-        items: BarItem.items,
+        items: BarItem.waveItems,
         fixedWidget: _showFixedWidget == "true"
             ? Container(
                 width: 50,
@@ -288,14 +321,15 @@ class _WavePageState extends State<WavePage> {
         direction: _direction == "up"
             ? WaveBottomBarDirection.up
             : WaveBottomBarDirection.down,
-        labelIconMargin: _labelMargin,
+        selectedLabelMargin: _selectLabelMargin,
+        unselectedLabelMargin: _unselectLabelMargin,
         activeTopMargin: _topMargin,
         duration: Duration(milliseconds: _duration),
-        curve: Curves.linear,
+        curve: _curve,
         selectedLabelStyle: TextStyle(fontSize: 12, color: Colors.blue),
         unselectedLabelStyle: TextStyle(fontSize: 12, color: Colors.grey),
-        showSelectedLabels: _showSelectedLabel == "true" ? true : false,
-        showUnselectedLabels: _showUnselectedLabel == "true" ? true : false,
+        showSelectedLabel: _showSelectedLabel == "true" ? true : false,
+        showUnselectedLabel: _showUnselectedLabel == "true" ? true : false,
         onTap: (index) {
           debugPrint("$index");
         },
