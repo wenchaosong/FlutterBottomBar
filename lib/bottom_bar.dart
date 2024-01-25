@@ -106,7 +106,7 @@ class WaveBottomBar extends StatefulWidget {
     this.fixedWidget,
     this.type = WaveBottomBarType.normal,
     this.direction = WaveBottomBarDirection.up,
-    this.selectedLabelMargin = 10,
+    this.selectedLabelMargin = 8,
     this.unselectedLabelMargin = 3,
     this.activeTopMargin = 5,
     this.duration = const Duration(milliseconds: 50),
@@ -166,60 +166,177 @@ class _WaveBottomBarState extends State<WaveBottomBar>
         child.add(Expanded(child: Container()));
         continue;
       }
-      child.add(Expanded(
-        child: InkWell(
-          onTap: () {
-            widget.onTap(i);
-            _currentIndex = i;
-            animToIndex();
-            setState(() {});
-          },
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              widget.items[i].icon,
-              if (widget.showUnselectedLabel ?? true)
-                SizedBox(height: widget.unselectedLabelMargin),
-              if (widget.showUnselectedLabel ?? true)
-                Text(
-                  "${widget.items[i].label}",
-                  style: widget.unselectedLabelStyle,
+      if (widget.type == WaveBottomBarType.fixed) {
+        if (i == widget.items.length ~/ 2) {
+          child.add(Expanded(
+            //TODO
+            child: InkWell(
+              onTap: () {
+                widget.onTap(i);
+                _currentIndex = i;
+                animToIndex();
+                setState(() {});
+              },
+              child: SizedBox(
+                height: widget.height + widget.amplitude,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    widget.items[i].icon,
+                  ],
                 ),
-            ],
+              ),
+            ),
+          ));
+        } else {
+          child.add(Expanded(
+            child: InkWell(
+              onTap: () {
+                widget.onTap(i);
+                _currentIndex = i;
+                animToIndex();
+                setState(() {});
+              },
+              child: SizedBox(
+                height: widget.height,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    widget.items[i].icon,
+                    if (widget.showUnselectedLabel ?? true)
+                      SizedBox(height: widget.unselectedLabelMargin),
+                    if (widget.showUnselectedLabel ?? true)
+                      Text(
+                        "${widget.items[i].label}",
+                        style: widget.unselectedLabelStyle,
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ));
+        }
+      } else {
+        child.add(Expanded(
+          child: InkWell(
+            onTap: () {
+              widget.onTap(i);
+              _currentIndex = i;
+              animToIndex();
+              setState(() {});
+            },
+            child: SizedBox(
+              height: widget.height,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  widget.items[i].icon,
+                  if (widget.showUnselectedLabel ?? true)
+                    SizedBox(height: widget.unselectedLabelMargin),
+                  if (widget.showUnselectedLabel ?? true)
+                    Text(
+                      "${widget.items[i].label}",
+                      style: widget.unselectedLabelStyle,
+                    ),
+                ],
+              ),
+            ),
           ),
-        ),
-      ));
+        ));
+      }
     }
     return child;
   }
 
   /// the active item
-  Widget createActiveItem() {
-    if (widget.fixedWidget == null) {
-      return InkWell(
-        onTap: () {
-          widget.onTap(_currentIndex);
-        },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            widget.items[_currentIndex].activeIcon,
-            if (widget.showSelectedLabel ?? true)
-              SizedBox(height: widget.selectedLabelMargin),
-            if (widget.showSelectedLabel ?? true)
-              Text(
-                "${widget.items[_currentIndex].label}",
-                style: widget.selectedLabelStyle,
+  Widget createActiveItem(double perWidth) {
+    if (widget.type == WaveBottomBarType.fixed) {
+      if (_currentIndex == widget.items.length ~/ 2) {
+        return Positioned(
+          left: perWidth * _currentIndex,
+          bottom: 0,
+          child: Container(
+            width: perWidth,
+            alignment: Alignment.center,
+            child: InkWell(
+              onTap: () {
+                widget.onTap(_currentIndex);
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  widget.items[_currentIndex].activeIcon,
+                  if (widget.showSelectedLabel ?? true)
+                    SizedBox(height: widget.unselectedLabelMargin),
+                  if (widget.showSelectedLabel ?? true)
+                    Text(
+                      "${widget.items[_currentIndex].label}",
+                      style: widget.selectedLabelStyle,
+                    ),
+                ],
               ),
-          ],
-        ),
-      );
+            ),
+          ),
+        );
+      } else {
+        return Positioned(
+          left: perWidth * _currentIndex,
+          bottom: 0,
+          child: SizedBox(
+            width: perWidth,
+            height: widget.height,
+            child: InkWell(
+              onTap: () {
+                widget.onTap(_currentIndex);
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  widget.items[_currentIndex].activeIcon,
+                  if (widget.showSelectedLabel ?? true)
+                    SizedBox(height: widget.unselectedLabelMargin),
+                  if (widget.showSelectedLabel ?? true)
+                    Text(
+                      "${widget.items[_currentIndex].label}",
+                      style: widget.selectedLabelStyle,
+                    ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }
     } else {
-      return InkWell(
-        onTap: () {
-          widget.onTap(_currentIndex);
-        },
-        child: widget.fixedWidget!,
+      return Positioned(
+        left: perWidth * _currentIndex,
+        top: widget.activeTopMargin,
+        child: Container(
+          width: perWidth,
+          alignment: Alignment.center,
+          child: InkWell(
+            onTap: () {
+              widget.onTap(_currentIndex);
+            },
+            child: widget.fixedWidget == null
+                ? Column(
+                    children: [
+                      widget.items[_currentIndex].activeIcon,
+                      if (widget.showSelectedLabel ?? true)
+                        SizedBox(height: widget.selectedLabelMargin),
+                      if (widget.showSelectedLabel ?? true)
+                        Text(
+                          "${widget.items[_currentIndex].label}",
+                          style: widget.selectedLabelStyle,
+                        ),
+                    ],
+                  )
+                : Column(
+                    children: [
+                      widget.fixedWidget!,
+                    ],
+                  ),
+          ),
+        ),
       );
     }
   }
@@ -249,31 +366,27 @@ class _WaveBottomBarState extends State<WaveBottomBar>
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
-          CustomPaint(
-            painter: WavePainter(
-              amplitude: widget.amplitude,
-              waveLength: widget.waveLength,
-              backgroundColor: widget.backgroundColor ?? Colors.white,
-              elevation: widget.elevation ?? 0,
-              shadowColor: widget.shadowColor ?? Colors.grey.shade300,
-              direction: widget.direction,
-              barCount: widget.items.length,
-              percentage: _animCon.value,
-            ),
-            child: SizedBox(
-              height: widget.height,
-              child: Row(children: createNormalItem()),
-            ),
-          ),
-          Positioned(
-            left: perWidth * _currentIndex,
-            top: widget.activeTopMargin,
-            child: Container(
-              width: perWidth,
-              alignment: Alignment.center,
-              child: createActiveItem(),
+          SizedBox(
+            width: width,
+            height: widget.height,
+            child: CustomPaint(
+              painter: WavePainter(
+                amplitude: widget.amplitude,
+                waveLength: widget.waveLength,
+                backgroundColor: widget.backgroundColor ?? Colors.white,
+                elevation: widget.elevation ?? 0,
+                shadowColor: widget.shadowColor ?? Colors.grey.shade300,
+                direction: widget.direction,
+                barCount: widget.items.length,
+                percentage: _animCon.value,
+              ),
             ),
           ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: createNormalItem(),
+          ),
+          createActiveItem(perWidth),
         ],
       ),
     );

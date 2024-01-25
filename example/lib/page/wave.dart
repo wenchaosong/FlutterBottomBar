@@ -310,7 +310,7 @@ class _WavePageState extends State<WavePage> {
         backgroundColor: _backgroundColor,
         elevation: _elevation,
         shadowColor: _shadowColor,
-        items: BarItem.waveItems,
+        items: BarItem.simpleUse,
         fixedWidget: _showFixedWidget == "true"
             ? Container(
                 width: 50,

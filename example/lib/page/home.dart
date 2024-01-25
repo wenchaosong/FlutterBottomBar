@@ -27,6 +27,16 @@ class HomePage extends StatelessWidget {
               },
             ),
           ),
+          Container(
+            width: double.infinity,
+            margin: EdgeInsets.only(left: 15, top: 15, right: 15),
+            child: ElevatedButton(
+              child: Text("Use"),
+              onPressed: () {
+                Navigator.pushNamed(context, "/use");
+              },
+            ),
+          ),
         ],
       ),
     );

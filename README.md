@@ -10,46 +10,25 @@ and provide much attrs to config it which you want, the package is small and sim
 
 [web Preview](https://wenchaosong.github.io/FlutterBottomBar/)
 
-#### Installation
+#### Install
 
 ```
 dependencies:
     flutter_bottom_bar: ^1.0.0
 ```
 
-#### Basic Usage
-
-1.Simple Usage
+#### Simple Usage
 
 ```
     bottomNavigationBar: WaveBottomBar(
-        amplitude: 35,
-        waveLength: 100,
-        items: BarItem.normalItems,
-        selectedLabelStyle: TextStyle(fontSize: 12, color: Colors.blue),
-        unselectedLabelStyle: TextStyle(fontSize: 12, color: Colors.grey),
+        items: BarItem.simpleUse,
         onTap: (index) {
-          debugPrint("$index");
+            debugPrint("$index");
         },
-      ),
+    ),
 ```
 
-2.Full Usage
+#### Tips
 
-```
-    bottomNavigationBar: WaveBottomBar(
-        amplitude: 35,
-        waveLength: 100,
-        items: BarItem.normalItems,
-        selectedLabelStyle: TextStyle(fontSize: 12, color: Colors.blue),
-        unselectedLabelStyle: TextStyle(fontSize: 12, color: Colors.grey),
-        onTap: (index) {
-          debugPrint("$index");
-        },
-      ),
-```
-
-#### FAQs
-
-none
+The Scaffold extendBody must be true 
 
