@@ -105,8 +105,22 @@ class _UsePageState extends State<UsePage> {
                 debugPrint("$index");
               },
             ),
+            SizedBox(height: 200),
           ],
         ),
+      ),
+      bottomNavigationBar: WaveBottomBar(
+        items: BarItem.simpleUse,
+        margin: EdgeInsets.only(left: 50, right: 50, bottom: 30),
+        corner: BorderRadius.only(
+          topLeft: Radius.circular(5),
+          topRight: Radius.circular(10),
+          bottomLeft: Radius.circular(15),
+          bottomRight: Radius.circular(20),
+        ),
+        onTap: (index) {
+          debugPrint("$index");
+        },
       ),
     );
   }

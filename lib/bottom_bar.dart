@@ -63,11 +63,17 @@ class WaveBottomBar extends StatefulWidget {
   /// See [WaveBottomBarDirection] for more information
   final WaveBottomBarDirection direction;
 
+  /// the distance of the parent
+  final EdgeInsets margin;
+
   /// the margin between label and icon
   final double labelMargin;
 
   /// the margin between the active item and top of the wave
   final double activeTopMargin;
+
+  /// corner radius of the [WaveBottomBar]
+  final BorderRadius corner;
 
   /// the wave move anim duration
   final Duration duration;
@@ -103,8 +109,10 @@ class WaveBottomBar extends StatefulWidget {
     this.fixedWidget,
     this.type = WaveBottomBarType.normal,
     this.direction = WaveBottomBarDirection.up,
+    this.margin = const EdgeInsets.all(0),
     this.labelMargin = 3,
     this.activeTopMargin = 5,
+    this.corner = const BorderRadius.all(Radius.zero),
     this.duration = const Duration(milliseconds: 50),
     this.curve = Curves.linear,
     this.selectedLabelStyle = const TextStyle(
@@ -180,7 +188,6 @@ class _WaveBottomBarState extends State<WaveBottomBar>
                   ? Column(
                       children: [
                         widget.items[i].icon,
-                        //TODO how to set same margin with normal item
                         const SizedBox(height: 4.5),
                         if (widget.direction == WaveBottomBarDirection.up &&
                             widget.showUnselectedLabel)
@@ -274,7 +281,6 @@ class _WaveBottomBarState extends State<WaveBottomBar>
                 ? Column(
                     children: [
                       widget.items[_currentIndex].activeIcon,
-                      //TODO how to set same margin with normal item
                       const SizedBox(height: 4.5),
                       if (widget.direction == WaveBottomBarDirection.up &&
                           widget.showSelectedLabel)
@@ -312,10 +318,13 @@ class _WaveBottomBarState extends State<WaveBottomBar>
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
+    var width = MediaQuery.of(context).size.width -
+        widget.margin.left -
+        widget.margin.right;
     var perWidth = width / widget.items.length;
-    return SizedBox(
+    return Container(
       height: widget.height + widget.amplitude,
+      margin: widget.margin,
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
@@ -330,6 +339,7 @@ class _WaveBottomBarState extends State<WaveBottomBar>
                 elevation: widget.elevation ?? 0,
                 shadowColor: widget.shadowColor ?? Colors.grey.shade300,
                 direction: widget.direction,
+                corner: widget.corner,
                 barCount: widget.items.length,
                 percentage: _animCon.value,
               ),

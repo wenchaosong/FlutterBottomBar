@@ -23,6 +23,9 @@ class WavePainter extends CustomPainter {
   /// See [WaveBottomBarDirection] for more information
   final WaveBottomBarDirection direction;
 
+  /// corner radius of the [WaveBottomBar]
+  final BorderRadius corner;
+
   /// length of bar item
   final int barCount;
 
@@ -36,6 +39,7 @@ class WavePainter extends CustomPainter {
     required this.elevation,
     required this.shadowColor,
     required this.direction,
+    required this.corner,
     required this.barCount,
     required this.percentage,
   });
@@ -49,7 +53,11 @@ class WavePainter extends CustomPainter {
 
     final Path path = Path();
 
-    path.moveTo(0, 0);
+    path.moveTo(0, corner.topLeft.y);
+    path.arcToPoint(
+      Offset(corner.topLeft.x, 0),
+      radius: corner.topLeft,
+    );
 
     // each item width
     final perWidth = size.width / barCount;
@@ -83,9 +91,25 @@ class WavePainter extends CustomPainter {
       0,
     );
 
-    path.lineTo(size.width, 0);
-    path.lineTo(size.width, size.height);
-    path.lineTo(0, size.height);
+    path.lineTo(size.width - corner.topRight.x, 0);
+    path.arcToPoint(
+      Offset(size.width, corner.topRight.y),
+      radius: corner.topRight,
+    );
+
+    path.lineTo(size.width, size.height - corner.bottomRight.y);
+    path.arcToPoint(
+      Offset(size.width - corner.bottomRight.x, size.height),
+      radius: corner.bottomRight,
+    );
+
+    path.lineTo(corner.bottomLeft.x, size.height);
+    path.arcToPoint(
+      Offset(0, size.height - corner.bottomLeft.y),
+      radius: corner.bottomLeft,
+    );
+
+    path.close();
 
     canvas.drawPath(path, pathPaint);
     if (elevation != 0) {

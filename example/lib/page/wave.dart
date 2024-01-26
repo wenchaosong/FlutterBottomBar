@@ -288,6 +288,7 @@ class _WavePageState extends State<WavePage> {
                 ),
               ],
             ),
+            SizedBox(height: 200),
           ],
         ),
       ),
