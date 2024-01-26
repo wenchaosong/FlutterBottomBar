@@ -1,6 +1,6 @@
 ### WaveBottomBar
 
-[![](https://img.shields.io/pub/v/flutter_bottom_bar.svg?color=blue)](https://pub.dev/packages/flutter_bottom_bar)
+[![](https://img.shields.io/pub/v/wave_bottom_bar.svg?color=blue)](https://pub.dev/packages/wave_bottom_bar)
 [![](https://img.shields.io/github/last-commit/wenchaosong/FlutterBottomBar?color=yellow)](https://github.com/wenchaosong/FlutterBottomBar)
 
 This is a bottom navigation bar widget that like a wave can smoothly move to the active position,
@@ -10,11 +10,13 @@ and provide much attrs to config it which you want, the package is small and sim
 
 [web Preview](https://wenchaosong.github.io/FlutterBottomBar/)
 
+![效果示例](https://img.alicdn.com/imgextra/i2/2315514881/O1CN01XTcLJs1lvY7MI2Med_!!2315514881.gif)
+
 #### Install
 
 ```
 dependencies:
-    flutter_bottom_bar: ^1.0.0
+    wave_bottom_bar: ^1.0.0
 ```
 
 #### Simple Usage
@@ -27,8 +29,4 @@ dependencies:
         },
     ),
 ```
-
-#### Tips
-
-The Scaffold extendBody must be true 
 

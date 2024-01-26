@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bottom_bar/bottom_bar.dart';
+import 'package:wave_bottom_bar/bottom_bar.dart';
 
 import '../data/bar_data.dart';
 

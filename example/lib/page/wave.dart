@@ -1,12 +1,12 @@
-import 'package:bottom_bar_example/view/item_select.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bottom_bar/bottom_bar.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:wave_bottom_bar/bottom_bar.dart';
 
 import '../data/bar_data.dart';
 import '../data/radio_data.dart';
 import '../view/item_color.dart';
 import '../view/item_radio.dart';
+import '../view/item_select.dart';
 import '../view/item_slide.dart';
 
 class WavePage extends StatefulWidget {
