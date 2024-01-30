@@ -66,8 +66,11 @@ class WaveBottomBar extends StatefulWidget {
   /// the distance of the parent
   final EdgeInsets margin;
 
-  /// the margin between label and icon
-  final double labelMargin;
+  /// the margin between active label and icon
+  final double selectedLabelMargin;
+
+  /// the margin between normal label and icon
+  final double unselectedLabelMargin;
 
   /// the margin between the active item and top of the wave
   final double activeTopMargin;
@@ -110,7 +113,8 @@ class WaveBottomBar extends StatefulWidget {
     this.type = WaveBottomBarType.normal,
     this.direction = WaveBottomBarDirection.up,
     this.margin = const EdgeInsets.all(0),
-    this.labelMargin = 3,
+    this.selectedLabelMargin = 7.5,
+    this.unselectedLabelMargin = 3,
     this.activeTopMargin = 5,
     this.corner = const BorderRadius.all(Radius.zero),
     this.duration = const Duration(milliseconds: 50),
@@ -188,10 +192,9 @@ class _WaveBottomBarState extends State<WaveBottomBar>
                   ? Column(
                       children: [
                         widget.items[i].icon,
-                        const SizedBox(height: 4.5),
                         if (widget.direction == WaveBottomBarDirection.up &&
                             widget.showUnselectedLabel)
-                          SizedBox(height: widget.labelMargin),
+                          SizedBox(height: widget.selectedLabelMargin),
                         if (widget.direction == WaveBottomBarDirection.up &&
                             widget.showUnselectedLabel)
                           Text(
@@ -220,7 +223,7 @@ class _WaveBottomBarState extends State<WaveBottomBar>
                 children: [
                   widget.items[i].icon,
                   if (widget.showUnselectedLabel)
-                    SizedBox(height: widget.labelMargin),
+                    SizedBox(height: widget.unselectedLabelMargin),
                   if (widget.showUnselectedLabel)
                     Text(
                       "${widget.items[i].label}",
@@ -255,7 +258,7 @@ class _WaveBottomBarState extends State<WaveBottomBar>
               children: [
                 widget.items[_currentIndex].activeIcon,
                 if (widget.showSelectedLabel)
-                  SizedBox(height: widget.labelMargin),
+                  SizedBox(height: widget.unselectedLabelMargin),
                 if (widget.showSelectedLabel)
                   Text(
                     "${widget.items[_currentIndex].label}",
@@ -281,10 +284,9 @@ class _WaveBottomBarState extends State<WaveBottomBar>
                 ? Column(
                     children: [
                       widget.items[_currentIndex].activeIcon,
-                      const SizedBox(height: 4.5),
                       if (widget.direction == WaveBottomBarDirection.up &&
                           widget.showSelectedLabel)
-                        SizedBox(height: widget.labelMargin),
+                        SizedBox(height: widget.selectedLabelMargin),
                       if (widget.direction == WaveBottomBarDirection.up &&
                           widget.showSelectedLabel)
                         Text(

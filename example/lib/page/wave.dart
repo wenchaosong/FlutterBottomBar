@@ -39,10 +39,11 @@ class _WavePageState extends State<WavePage> {
   Color _shadowColor = Colors.grey.shade300;
   String _showFixedWidget = "false";
   String _direction = "up";
-  double _labelMargin = 3.0;
+  double _selectLabelMargin = 7.5;
+  double _unselectLabelMargin = 3.0;
   double _topMargin = 5.0;
-  int _duration = 500;
-  Curve _curve = Curves.elasticOut;
+  int _duration = 50;
+  Curve _curve = Curves.linear;
   String _showSelectedLabel = "true";
   String _showUnselectedLabel = "true";
 
@@ -201,13 +202,24 @@ class _WavePageState extends State<WavePage> {
               ],
             ),
             ItemSlideWidget(
-              title: 'LabelMargin',
-              value: _labelMargin,
+              title: 'SelectLabelMargin',
+              value: _selectLabelMargin,
               min: 0.0,
               max: 20.0,
               divisions: 20,
               onChanged: (val) {
-                _labelMargin = val;
+                _selectLabelMargin = val;
+                setState(() {});
+              },
+            ),
+            ItemSlideWidget(
+              title: 'UnselectLabelMargin',
+              value: _unselectLabelMargin,
+              min: 0.0,
+              max: 20.0,
+              divisions: 20,
+              onChanged: (val) {
+                _unselectLabelMargin = val;
                 setState(() {});
               },
             ),
@@ -310,7 +322,8 @@ class _WavePageState extends State<WavePage> {
         direction: _direction == "up"
             ? WaveBottomBarDirection.up
             : WaveBottomBarDirection.down,
-        labelMargin: _labelMargin,
+        selectedLabelMargin: _selectLabelMargin,
+        unselectedLabelMargin: _unselectLabelMargin,
         activeTopMargin: _topMargin,
         duration: Duration(milliseconds: _duration),
         curve: _curve,
