@@ -1,6 +1,6 @@
 name: wave_bottom_bar
 description: Flutter plugin for bottom navigation bar. Code is little and you can simple to use it.
-version: 1.1.0
+version: 1.2.0
 homepage: https://github.com/wenchaosong/FlutterBottomBar
 
 environment:
