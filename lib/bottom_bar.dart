@@ -305,10 +305,8 @@ class _WaveBottomBarState extends State<WaveBottomBar>
   /// start anim to active item, pass the percentage to the wave
   void animToIndex() {
     if (widget.type == WaveBottomBarType.fixed) {
-      _animCon.animateTo(
-        (widget.items.length ~/ 2) / widget.items.length,
-        duration: const Duration(milliseconds: 10),
-      );
+      var middle = (widget.items.length ~/ 2) / widget.items.length;
+      _animCon.value = middle;
       return;
     }
     _animCon.animateTo(

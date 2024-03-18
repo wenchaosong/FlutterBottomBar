@@ -1,3 +1,7 @@
+## 1.3.0
+
+- remove anim when fixed
+
 ## 1.2.0
 
 - refactor shadow
