@@ -318,38 +318,49 @@ class _WaveBottomBarState extends State<WaveBottomBar>
 
   @override
   Widget build(BuildContext context) {
+    var bottom = MediaQuery.of(context).padding.bottom;
     var width = MediaQuery.of(context).size.width -
         widget.margin.left -
         widget.margin.right;
     var perWidth = width / widget.items.length;
     return Container(
-      height: widget.height + widget.amplitude,
+      height: widget.height + widget.amplitude + bottom,
       margin: widget.margin,
-      child: Stack(
-        alignment: Alignment.bottomCenter,
+      child: Column(
         children: [
-          SizedBox(
-            width: width,
-            height: widget.height,
-            child: CustomPaint(
-              painter: WavePainter(
-                amplitude: widget.amplitude,
-                waveLength: widget.waveLength,
-                backgroundColor: widget.backgroundColor ?? Colors.white,
-                elevation: widget.elevation ?? 0,
-                shadowColor: widget.shadowColor ?? Colors.grey.shade300,
-                direction: widget.direction,
-                corner: widget.corner,
-                barCount: widget.items.length,
-                percentage: _animCon.value,
-              ),
+          Expanded(
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                SizedBox(
+                  width: width,
+                  height: widget.height,
+                  child: CustomPaint(
+                    painter: WavePainter(
+                      amplitude: widget.amplitude,
+                      waveLength: widget.waveLength,
+                      backgroundColor: widget.backgroundColor ?? Colors.white,
+                      elevation: widget.elevation ?? 0,
+                      shadowColor: widget.shadowColor ?? Colors.grey.shade300,
+                      direction: widget.direction,
+                      corner: widget.corner,
+                      barCount: widget.items.length,
+                      percentage: _animCon.value,
+                    ),
+                  ),
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: createNormalItem(),
+                ),
+                createActiveItem(perWidth),
+              ],
             ),
           ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: createNormalItem(),
+          Container(
+            height: bottom,
+            color: widget.backgroundColor ?? Colors.white,
           ),
-          createActiveItem(perWidth),
         ],
       ),
     );

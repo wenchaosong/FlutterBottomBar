@@ -1,3 +1,7 @@
+## 1.4.0
+
+- add bottom padding
+
 ## 1.3.0
 
 - remove anim when fixed
