@@ -1,3 +1,7 @@
+## 1.5.0
+
+- add controller
+
 ## 1.4.0
 
 - add bottom padding

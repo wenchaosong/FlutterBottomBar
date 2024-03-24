@@ -22,6 +22,28 @@ enum WaveBottomBarDirection {
   down,
 }
 
+/// control the current index
+class WaveBarController {
+  /// the widget state [_WaveBottomBarState]
+  /// can use this to control index
+  _WaveBottomBarState? _state;
+
+  /// auto bind, no need to call
+  void _bindState(_WaveBottomBarState state) {
+    _state = state;
+  }
+
+  /// need to call when the stateful page is disposed
+  void dispose() {
+    _state = null;
+  }
+
+  /// call this to change the current index
+  void animateToIndex(int index) {
+    _state!.animToIndex(index);
+  }
+}
+
 /// A bottom widget that like a wave can smoothly move to the active position
 /// and provide much attrs to config the widget
 class WaveBottomBar extends StatefulWidget {
@@ -62,6 +84,9 @@ class WaveBottomBar extends StatefulWidget {
   /// direction of the [WaveBottomBar]
   /// See [WaveBottomBarDirection] for more information
   final WaveBottomBarDirection direction;
+
+  /// this is used to update the current index
+  final WaveBarController? controller;
 
   /// the distance of the parent
   final EdgeInsets margin;
@@ -112,6 +137,7 @@ class WaveBottomBar extends StatefulWidget {
     this.fixedWidget,
     this.type = WaveBottomBarType.normal,
     this.direction = WaveBottomBarDirection.up,
+    this.controller,
     this.margin = const EdgeInsets.all(0),
     this.selectedLabelMargin = 7.5,
     this.unselectedLabelMargin = 3,
@@ -150,14 +176,23 @@ class _WaveBottomBarState extends State<WaveBottomBar>
   void initState() {
     super.initState();
 
+    widget.controller?._bindState(this);
+
     _animCon = AnimationController(vsync: this)
       ..addListener(() {
         setState(() {});
       });
 
-    _currentIndex = widget.initialIndex;
-    animToIndex();
-    setState(() {});
+    animToIndex(widget.initialIndex);
+  }
+
+  @override
+  void didUpdateWidget(covariant WaveBottomBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.controller != null &&
+        oldWidget.controller != widget.controller) {
+      widget.controller?._bindState(this);
+    }
   }
 
   @override
@@ -184,9 +219,7 @@ class _WaveBottomBarState extends State<WaveBottomBar>
             child: InkWell(
               onTap: () {
                 widget.onTap(i);
-                _currentIndex = i;
-                animToIndex();
-                setState(() {});
+                animToIndex(i);
               },
               child: widget.fixedWidget == null
                   ? Column(
@@ -212,9 +245,7 @@ class _WaveBottomBarState extends State<WaveBottomBar>
           child: InkWell(
             onTap: () {
               widget.onTap(i);
-              _currentIndex = i;
-              animToIndex();
-              setState(() {});
+              animToIndex(i);
             },
             child: SizedBox(
               height: widget.height,
@@ -303,7 +334,9 @@ class _WaveBottomBarState extends State<WaveBottomBar>
   }
 
   /// start anim to active item, pass the percentage to the wave
-  void animToIndex() {
+  void animToIndex(int index) {
+    _currentIndex = index;
+    setState(() {});
     if (widget.type == WaveBottomBarType.fixed) {
       var middle = (widget.items.length ~/ 2) / widget.items.length;
       _animCon.value = middle;
