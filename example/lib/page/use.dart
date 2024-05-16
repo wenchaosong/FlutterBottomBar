@@ -33,16 +33,18 @@ class _UsePageState extends State<UsePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 30),
+            SizedBox(height: 50),
             WaveBottomBar(
               items: BarItem.simpleUse,
+              removeBottom: true,
               onTap: (index) {
                 debugPrint("$index");
               },
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 40),
             WaveBottomBar(
               items: BarItem.simpleUse,
+              removeBottom: true,
               fixedWidget: ClipOval(
                 child: Container(
                   width: 45,
@@ -56,17 +58,19 @@ class _UsePageState extends State<UsePage> {
                 debugPrint("$index");
               },
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 40),
             WaveBottomBar(
               items: BarItem.fixed,
+              removeBottom: true,
               type: WaveBottomBarType.fixed,
               onTap: (index) {
                 debugPrint("$index");
               },
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 40),
             WaveBottomBar(
               items: BarItem.fixed,
+              removeBottom: true,
               fixedWidget: ClipOval(
                 child: Container(
                   width: 45,
@@ -81,46 +85,51 @@ class _UsePageState extends State<UsePage> {
                 debugPrint("$index");
               },
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 40),
             WaveBottomBar(
               amplitude: 42,
               waveLength: 120,
-              activeTopMargin: 34,
+              activeTopMargin: -8,
               items: BarItem.simpleUse,
+              removeBottom: true,
               direction: WaveBottomBarDirection.down,
-              showSelectedLabel: false,
               onTap: (index) {
                 debugPrint("$index");
               },
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 40),
             WaveBottomBar(
               amplitude: 42,
               waveLength: 120,
-              activeTopMargin: 34,
+              activeTopMargin: -8,
               items: BarItem.fixed,
+              removeBottom: true,
               type: WaveBottomBarType.fixed,
               direction: WaveBottomBarDirection.down,
               onTap: (index) {
                 debugPrint("$index");
               },
             ),
-            SizedBox(height: 200),
+            SizedBox(height: 40),
+            Container(
+              margin: EdgeInsets.only(left: 30, right: 30),
+              child: WaveBottomBar(
+                width: MediaQuery.of(context).size.width - 60,
+                items: BarItem.simpleUse,
+                removeBottom: true,
+                corner: BorderRadius.only(
+                  topLeft: Radius.circular(5),
+                  topRight: Radius.circular(10),
+                  bottomLeft: Radius.circular(15),
+                  bottomRight: Radius.circular(20),
+                ),
+                onTap: (index) {
+                  debugPrint("$index");
+                },
+              ),
+            ),
           ],
         ),
-      ),
-      bottomNavigationBar: WaveBottomBar(
-        items: BarItem.simpleUse,
-        margin: EdgeInsets.only(left: 50, right: 50, bottom: 30),
-        corner: BorderRadius.only(
-          topLeft: Radius.circular(5),
-          topRight: Radius.circular(10),
-          bottomLeft: Radius.circular(15),
-          bottomRight: Radius.circular(20),
-        ),
-        onTap: (index) {
-          debugPrint("$index");
-        },
       ),
     );
   }

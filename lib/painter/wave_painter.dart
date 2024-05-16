@@ -51,14 +51,6 @@ class WavePainter extends CustomPainter {
       ..color = shadowColor
       ..maskFilter = MaskFilter.blur(BlurStyle.outer, elevation);
 
-    final Path path = Path();
-
-    path.moveTo(0, corner.topLeft.y);
-    path.arcToPoint(
-      Offset(corner.topLeft.x, 0),
-      radius: corner.topLeft,
-    );
-
     // each item width
     final perWidth = size.width / barCount;
 
@@ -66,50 +58,45 @@ class WavePainter extends CustomPainter {
     final begin = size.width * percentage;
     final middle = begin + perWidth / 2;
 
-    // actual begin position is
-    // active item middle position - half the wave length
-    path.lineTo(middle - waveLength / 2, 0);
-
-    // the left wave
-    path.cubicTo(
-      middle - waveLength / 4,
-      0,
-      middle - waveLength / 4,
-      direction == WaveBottomBarDirection.up ? -amplitude : amplitude,
-      middle,
-      direction == WaveBottomBarDirection.up ? -amplitude : amplitude,
-    );
-
-    // the right wave, the end position is
-    // active item middle position + half the wave length
-    path.cubicTo(
-      middle + waveLength / 4,
-      direction == WaveBottomBarDirection.up ? -amplitude : amplitude,
-      middle + waveLength / 4,
-      0,
-      middle + waveLength / 2,
-      0,
-    );
-
-    path.lineTo(size.width - corner.topRight.x, 0);
-    path.arcToPoint(
-      Offset(size.width, corner.topRight.y),
-      radius: corner.topRight,
-    );
-
-    path.lineTo(size.width, size.height - corner.bottomRight.y);
-    path.arcToPoint(
-      Offset(size.width - corner.bottomRight.x, size.height),
-      radius: corner.bottomRight,
-    );
-
-    path.lineTo(corner.bottomLeft.x, size.height);
-    path.arcToPoint(
-      Offset(0, size.height - corner.bottomLeft.y),
-      radius: corner.bottomLeft,
-    );
-
-    path.close();
+    final Path path = Path()
+      ..moveTo(0, corner.topLeft.y)
+      ..arcToPoint(
+        Offset(corner.topLeft.x, 0),
+        radius: corner.topLeft,
+      )
+      ..lineTo(middle - waveLength / 2, 0)
+      ..cubicTo(
+        middle - waveLength / 4,
+        0,
+        middle - waveLength / 4,
+        direction == WaveBottomBarDirection.up ? -amplitude : amplitude,
+        middle,
+        direction == WaveBottomBarDirection.up ? -amplitude : amplitude,
+      )
+      ..cubicTo(
+        middle + waveLength / 4,
+        direction == WaveBottomBarDirection.up ? -amplitude : amplitude,
+        middle + waveLength / 4,
+        0,
+        middle + waveLength / 2,
+        0,
+      )
+      ..lineTo(size.width - corner.topRight.x, 0)
+      ..arcToPoint(
+        Offset(size.width, corner.topRight.y),
+        radius: corner.topRight,
+      )
+      ..lineTo(size.width, size.height - corner.bottomRight.y)
+      ..arcToPoint(
+        Offset(size.width - corner.bottomRight.x, size.height),
+        radius: corner.bottomRight,
+      )
+      ..lineTo(corner.bottomLeft.x, size.height)
+      ..arcToPoint(
+        Offset(0, size.height - corner.bottomLeft.y),
+        radius: corner.bottomLeft,
+      )
+      ..close();
 
     if (elevation > 0) {
       canvas.drawPath(path, shadowPaint);

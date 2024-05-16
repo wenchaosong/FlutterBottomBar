@@ -1,3 +1,7 @@
+## 1.6.0
+
+- remove extendBody
+
 ## 1.5.0
 
 - add controller

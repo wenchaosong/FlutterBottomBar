@@ -47,6 +47,9 @@ class WaveBarController {
 /// A bottom widget that like a wave can smoothly move to the active position
 /// and provide much attrs to config the widget
 class WaveBottomBar extends StatefulWidget {
+  /// width of the [WaveBottomBar]
+  final double? width;
+
   /// height of the [WaveBottomBar]
   final double height;
 
@@ -88,9 +91,6 @@ class WaveBottomBar extends StatefulWidget {
   /// this is used to update the current index
   final WaveBarController? controller;
 
-  /// the distance of the parent
-  final EdgeInsets margin;
-
   /// the margin between active label and icon
   final double selectedLabelMargin;
 
@@ -121,11 +121,15 @@ class WaveBottomBar extends StatefulWidget {
   /// whether the labels are shown for the unselected [BottomNavigationBarItem]s.
   final bool showUnselectedLabel;
 
+  /// whether remove padding of bottom
+  final bool removeBottom;
+
   /// called when one of the [items] is tapped.
   final Function(int index) onTap;
 
   WaveBottomBar({
     Key? key,
+    this.width,
     this.height = 56.0,
     this.amplitude = 25,
     this.waveLength = 100,
@@ -138,10 +142,9 @@ class WaveBottomBar extends StatefulWidget {
     this.type = WaveBottomBarType.normal,
     this.direction = WaveBottomBarDirection.up,
     this.controller,
-    this.margin = const EdgeInsets.all(0),
-    this.selectedLabelMargin = 7.5,
-    this.unselectedLabelMargin = 3,
-    this.activeTopMargin = 5,
+    this.selectedLabelMargin = 8,
+    this.unselectedLabelMargin = 4,
+    this.activeTopMargin = -20,
     this.corner = const BorderRadius.all(Radius.zero),
     this.duration = const Duration(milliseconds: 50),
     this.curve = Curves.linear,
@@ -155,6 +158,7 @@ class WaveBottomBar extends StatefulWidget {
     ),
     this.showSelectedLabel = true,
     this.showUnselectedLabel = true,
+    this.removeBottom = false,
     required this.onTap,
   }) : super(key: key) {
     if (type == WaveBottomBarType.fixed) {
@@ -166,8 +170,7 @@ class WaveBottomBar extends StatefulWidget {
   State<StatefulWidget> createState() => _WaveBottomBarState();
 }
 
-class _WaveBottomBarState extends State<WaveBottomBar>
-    with SingleTickerProviderStateMixin {
+class _WaveBottomBarState extends State<WaveBottomBar> with SingleTickerProviderStateMixin {
   /// the active item index
   int _currentIndex = 0;
   late AnimationController _animCon;
@@ -189,8 +192,7 @@ class _WaveBottomBarState extends State<WaveBottomBar>
   @override
   void didUpdateWidget(covariant WaveBottomBar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.controller != null &&
-        oldWidget.controller != widget.controller) {
+    if (widget.controller != null && oldWidget.controller != widget.controller) {
       widget.controller?._bindState(this);
     }
   }
@@ -202,135 +204,111 @@ class _WaveBottomBarState extends State<WaveBottomBar>
   }
 
   /// the normal widget list of bottom items, contains icon and text
-  List<Widget> createNormalItem() {
-    final List<Widget> child = [];
+  Widget createNormalItem() {
+    final childItem = <Widget>[];
     for (var i = 0; i < widget.items.length; i++) {
-      if (_currentIndex == i) {
-        child.add(Expanded(child: Container()));
+      if (_currentIndex == i ||
+          (widget.type == WaveBottomBarType.fixed && i == widget.items.length ~/ 2)) {
+        childItem.add(const Expanded(child: SizedBox()));
         continue;
       }
-      if (widget.type == WaveBottomBarType.fixed &&
-          i == widget.items.length ~/ 2) {
-        child.add(Expanded(
+      Widget child = Expanded(
+        child: GestureDetector(
+          onTap: () {
+            widget.onTap(i);
+            animToIndex(i);
+          },
           child: Container(
-            height: widget.height + widget.amplitude,
-            margin: EdgeInsets.only(top: widget.activeTopMargin),
-            alignment: Alignment.center,
-            child: InkWell(
-              onTap: () {
-                widget.onTap(i);
-                animToIndex(i);
-              },
-              child: widget.fixedWidget == null
-                  ? Column(
-                      children: [
-                        widget.items[i].icon,
-                        if (widget.direction == WaveBottomBarDirection.up &&
-                            widget.showUnselectedLabel)
-                          SizedBox(height: widget.selectedLabelMargin),
-                        if (widget.direction == WaveBottomBarDirection.up &&
-                            widget.showUnselectedLabel)
-                          Text(
-                            "${widget.items[i].label}",
-                            style: widget.unselectedLabelStyle,
-                          ),
-                      ],
-                    )
-                  : Column(children: [widget.fixedWidget!]),
-            ),
-          ),
-        ));
-      } else {
-        child.add(Expanded(
-          child: InkWell(
-            onTap: () {
-              widget.onTap(i);
-              animToIndex(i);
-            },
-            child: SizedBox(
-              height: widget.height,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  widget.items[i].icon,
-                  if (widget.showUnselectedLabel)
-                    SizedBox(height: widget.unselectedLabelMargin),
-                  if (widget.showUnselectedLabel)
-                    Text(
-                      "${widget.items[i].label}",
-                      style: widget.unselectedLabelStyle,
-                    ),
-                ],
-              ),
-            ),
-          ),
-        ));
-      }
-    }
-    return child;
-  }
-
-  /// the active item
-  Widget createActiveItem(double perWidth) {
-    if (widget.type == WaveBottomBarType.fixed &&
-        _currentIndex != widget.items.length ~/ 2) {
-      return Positioned(
-        left: perWidth * _currentIndex,
-        bottom: 0,
-        child: SizedBox(
-          width: perWidth,
-          height: widget.height,
-          child: InkWell(
-            onTap: () {
-              widget.onTap(_currentIndex);
-            },
+            height: widget.height,
+            color: Colors.transparent,
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                widget.items[_currentIndex].activeIcon,
-                if (widget.showSelectedLabel)
+                widget.items[i].icon,
+                if (widget.showUnselectedLabel) ...[
                   SizedBox(height: widget.unselectedLabelMargin),
-                if (widget.showSelectedLabel)
                   Text(
-                    "${widget.items[_currentIndex].label}",
-                    style: widget.selectedLabelStyle,
+                    "${widget.items[i].label}",
+                    style: widget.unselectedLabelStyle,
                   ),
+                ],
               ],
             ),
           ),
         ),
       );
-    } else {
-      return Positioned(
-        left: perWidth * _currentIndex,
-        top: widget.activeTopMargin,
-        child: Container(
-          width: perWidth,
-          alignment: Alignment.center,
-          child: InkWell(
-            onTap: () {
-              widget.onTap(_currentIndex);
-            },
-            child: widget.fixedWidget == null
-                ? Column(
-                    children: [
-                      widget.items[_currentIndex].activeIcon,
-                      if (widget.direction == WaveBottomBarDirection.up &&
-                          widget.showSelectedLabel)
-                        SizedBox(height: widget.selectedLabelMargin),
-                      if (widget.direction == WaveBottomBarDirection.up &&
-                          widget.showSelectedLabel)
-                        Text(
-                          "${widget.items[_currentIndex].label}",
-                          style: widget.selectedLabelStyle,
-                        ),
-                    ],
-                  )
-                : Column(children: [widget.fixedWidget!]),
-          ),
-        ),
-      );
+      childItem.add(child);
     }
+    return Row(children: childItem);
+  }
+
+  /// the active and fixed item
+  List<Widget> createFixedItem(double perWidth) {
+    final childItem = <Widget>[];
+
+    if (widget.type == WaveBottomBarType.fixed) {
+      if (_currentIndex == widget.items.length ~/ 2) {
+        childItem.add(buildItem(perWidth, _currentIndex));
+      } else {
+        childItem.add(buildItem(perWidth, _currentIndex, hasFixed: false));
+        childItem.add(buildItem(perWidth, widget.items.length ~/ 2, isSelect: false));
+      }
+    } else {
+      childItem.add(buildItem(perWidth, _currentIndex));
+    }
+
+    return childItem;
+  }
+
+  /// create the base item
+  Widget buildItem(
+    double perWidth,
+    int index, {
+    bool hasFixed = true,
+    bool isSelect = true,
+  }) {
+    bool hideLabel = false;
+    if (!widget.showSelectedLabel) {
+      hideLabel = true;
+    } else {
+      if (widget.direction == WaveBottomBarDirection.down && hasFixed) {
+        hideLabel = true;
+      }
+    }
+    return Positioned(
+      left: index * perWidth,
+      top: hasFixed ? widget.activeTopMargin : 0,
+      bottom: 0,
+      child: GestureDetector(
+        onTap: () {
+          widget.onTap(index);
+          animToIndex(index);
+        },
+        child: SizedBox(
+          width: perWidth,
+          child: hasFixed && widget.fixedWidget != null
+              ? Column(children: [widget.fixedWidget!])
+              : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: hasFixed ? MainAxisAlignment.start : MainAxisAlignment.center,
+                  children: [
+                    widget.items[index].activeIcon,
+                    if (!hideLabel) ...[
+                      SizedBox(
+                        height:
+                            hasFixed ? widget.selectedLabelMargin : widget.unselectedLabelMargin,
+                      ),
+                      Text(
+                        "${widget.items[index].label}",
+                        style: isSelect ? widget.selectedLabelStyle : widget.unselectedLabelStyle,
+                      ),
+                    ],
+                  ],
+                ),
+        ),
+      ),
+    );
   }
 
   /// start anim to active item, pass the percentage to the wave
@@ -338,7 +316,7 @@ class _WaveBottomBarState extends State<WaveBottomBar>
     _currentIndex = index;
     setState(() {});
     if (widget.type == WaveBottomBarType.fixed) {
-      var middle = (widget.items.length ~/ 2) / widget.items.length;
+      final middle = (widget.items.length ~/ 2) / widget.items.length;
       _animCon.value = middle;
       return;
     }
@@ -351,51 +329,35 @@ class _WaveBottomBarState extends State<WaveBottomBar>
 
   @override
   Widget build(BuildContext context) {
-    var bottom = MediaQuery.of(context).padding.bottom;
-    var width = MediaQuery.of(context).size.width -
-        widget.margin.left -
-        widget.margin.right;
-    var perWidth = width / widget.items.length;
-    return Container(
-      height: widget.height + widget.amplitude + bottom,
-      margin: widget.margin,
-      child: Column(
-        children: [
-          Expanded(
-            child: Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                SizedBox(
-                  width: width,
-                  height: widget.height,
-                  child: CustomPaint(
-                    painter: WavePainter(
-                      amplitude: widget.amplitude,
-                      waveLength: widget.waveLength,
-                      backgroundColor: widget.backgroundColor ?? Colors.white,
-                      elevation: widget.elevation ?? 0,
-                      shadowColor: widget.shadowColor ?? Colors.grey.shade300,
-                      direction: widget.direction,
-                      corner: widget.corner,
-                      barCount: widget.items.length,
-                      percentage: _animCon.value,
-                    ),
-                  ),
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: createNormalItem(),
-                ),
-                createActiveItem(perWidth),
-              ],
+    final bottom = MediaQuery.of(context).padding.bottom;
+    final width = widget.width ?? MediaQuery.of(context).size.width;
+    final perWidth = width / widget.items.length;
+    final height = widget.removeBottom ? widget.height : widget.height + bottom;
+    return Stack(
+      fit: StackFit.loose,
+      clipBehavior: Clip.none,
+      alignment: Alignment.topCenter,
+      children: [
+        SizedBox(
+          width: width,
+          height: height,
+          child: CustomPaint(
+            painter: WavePainter(
+              amplitude: widget.amplitude,
+              waveLength: widget.waveLength,
+              backgroundColor: widget.backgroundColor ?? Colors.white,
+              elevation: widget.elevation ?? 0,
+              shadowColor: widget.shadowColor ?? Colors.grey.shade300,
+              direction: widget.direction,
+              corner: widget.corner,
+              barCount: widget.items.length,
+              percentage: _animCon.value,
             ),
           ),
-          Container(
-            height: bottom,
-            color: widget.backgroundColor ?? Colors.white,
-          ),
-        ],
-      ),
+        ),
+        createNormalItem(),
+        ...createFixedItem(perWidth),
+      ],
     );
   }
 }
