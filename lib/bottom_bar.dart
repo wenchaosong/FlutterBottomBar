@@ -239,144 +239,72 @@ class _WaveBottomBarState extends State<WaveBottomBar> with SingleTickerProvider
     return Row(children: childItem);
   }
 
-  /// the active item
+  /// the active and fixed item
   List<Widget> createFixedItem(double perWidth) {
     final childItem = <Widget>[];
 
     if (widget.type == WaveBottomBarType.fixed) {
       if (_currentIndex == widget.items.length ~/ 2) {
-        Widget child = GestureDetector(
-          onTap: () {
-            widget.onTap(_currentIndex);
-            animToIndex(_currentIndex);
-          },
-          child: SizedBox(
-            width: perWidth,
-            child: widget.fixedWidget != null
-                ? Column(children: [widget.fixedWidget!])
-                : Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      widget.items[_currentIndex].activeIcon,
-                      if (widget.direction == WaveBottomBarDirection.up &&
-                          widget.showSelectedLabel) ...[
-                        SizedBox(height: widget.selectedLabelMargin),
-                        Text(
-                          "${widget.items[_currentIndex].label}",
-                          style: widget.selectedLabelStyle,
-                        ),
-                      ],
-                    ],
-                  ),
-          ),
-        );
-        childItem.add(Positioned(
-          left: _currentIndex * perWidth,
-          top: widget.activeTopMargin,
-          bottom: 0,
-          child: child,
-        ));
+        childItem.add(buildItem(perWidth, _currentIndex));
       } else {
-        Widget child1 = GestureDetector(
-          onTap: () {
-            widget.onTap(_currentIndex);
-            animToIndex(_currentIndex);
-          },
-          child: SizedBox(
-            width: perWidth,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                widget.items[_currentIndex].activeIcon,
-                SizedBox(height: widget.unselectedLabelMargin),
-                Text(
-                  "${widget.items[_currentIndex].label}",
-                  style: widget.selectedLabelStyle,
-                ),
-              ],
-            ),
-          ),
-        );
-        childItem.add(Positioned(
-          left: _currentIndex * perWidth,
-          top: 0,
-          bottom: 0,
-          child: child1,
-        ));
-
-        int index = widget.items.length ~/ 2;
-        Widget child2 = GestureDetector(
-          onTap: () {
-            widget.onTap(index);
-            animToIndex(index);
-          },
-          child: SizedBox(
-            width: perWidth,
-            child: widget.fixedWidget != null
-                ? Column(children: [widget.fixedWidget!])
-                : Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      widget.items[index].activeIcon,
-                      if (widget.direction == WaveBottomBarDirection.up &&
-                          widget.showSelectedLabel) ...[
-                        SizedBox(height: widget.selectedLabelMargin),
-                        Text(
-                          "${widget.items[index].label}",
-                          style: widget.unselectedLabelStyle,
-                        ),
-                      ],
-                    ],
-                  ),
-          ),
-        );
-        childItem.add(Positioned(
-          left: index * perWidth,
-          top: widget.activeTopMargin,
-          bottom: 0,
-          child: child2,
-        ));
+        childItem.add(buildItem(perWidth, _currentIndex, hasFixed: false));
+        childItem.add(buildItem(perWidth, widget.items.length ~/ 2, isSelect: false));
       }
     } else {
-      Widget child = GestureDetector(
-        onTap: () {
-          widget.onTap(_currentIndex);
-          animToIndex(_currentIndex);
-        },
-        child: SizedBox(
-          width: perWidth,
-          child: widget.fixedWidget != null
-              ? Column(children: [widget.fixedWidget!])
-              : Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    widget.items[_currentIndex].activeIcon,
-                    if (widget.direction == WaveBottomBarDirection.up &&
-                        widget.showSelectedLabel) ...[
-                      SizedBox(height: widget.selectedLabelMargin),
-                      Text(
-                        "${widget.items[_currentIndex].label}",
-                        style: widget.selectedLabelStyle,
-                      ),
-                    ],
-                  ],
-                ),
-        ),
-      );
-      childItem.add(Positioned(
-        left: _currentIndex * perWidth,
-        top: widget.activeTopMargin,
-        bottom: 0,
-        child: child,
-      ));
+      childItem.add(buildItem(perWidth, _currentIndex));
     }
 
     return childItem;
   }
 
-  Widget buildItem() {
-    return Container();
+  /// create the base item
+  Widget buildItem(
+    double perWidth,
+    int index, {
+    bool hasFixed = true,
+    bool isSelect = true,
+  }) {
+    bool hideLabel = false;
+    if (!widget.showSelectedLabel) {
+      hideLabel = true;
+    } else {
+      if (widget.direction == WaveBottomBarDirection.down && hasFixed) {
+        hideLabel = true;
+      }
+    }
+    return Positioned(
+      left: index * perWidth,
+      top: hasFixed ? widget.activeTopMargin : 0,
+      bottom: 0,
+      child: GestureDetector(
+        onTap: () {
+          widget.onTap(index);
+          animToIndex(index);
+        },
+        child: SizedBox(
+          width: perWidth,
+          child: hasFixed && widget.fixedWidget != null
+              ? Column(children: [widget.fixedWidget!])
+              : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: hasFixed ? MainAxisAlignment.start : MainAxisAlignment.center,
+                  children: [
+                    widget.items[index].activeIcon,
+                    if (!hideLabel) ...[
+                      SizedBox(
+                        height:
+                            hasFixed ? widget.selectedLabelMargin : widget.unselectedLabelMargin,
+                      ),
+                      Text(
+                        "${widget.items[index].label}",
+                        style: isSelect ? widget.selectedLabelStyle : widget.unselectedLabelStyle,
+                      ),
+                    ],
+                  ],
+                ),
+        ),
+      ),
+    );
   }
 
   /// start anim to active item, pass the percentage to the wave
