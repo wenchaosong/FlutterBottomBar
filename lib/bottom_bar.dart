@@ -47,6 +47,9 @@ class WaveBarController {
 /// A bottom widget that like a wave can smoothly move to the active position
 /// and provide much attrs to config the widget
 class WaveBottomBar extends StatefulWidget {
+  /// width of the [WaveBottomBar]
+  final double? width;
+
   /// height of the [WaveBottomBar]
   final double height;
 
@@ -88,9 +91,6 @@ class WaveBottomBar extends StatefulWidget {
   /// this is used to update the current index
   final WaveBarController? controller;
 
-  /// the distance of the parent
-  final EdgeInsets margin;
-
   /// the margin between active label and icon
   final double selectedLabelMargin;
 
@@ -126,6 +126,7 @@ class WaveBottomBar extends StatefulWidget {
 
   WaveBottomBar({
     Key? key,
+    this.width,
     this.height = 56.0,
     this.amplitude = 25,
     this.waveLength = 100,
@@ -138,9 +139,8 @@ class WaveBottomBar extends StatefulWidget {
     this.type = WaveBottomBarType.normal,
     this.direction = WaveBottomBarDirection.up,
     this.controller,
-    this.margin = const EdgeInsets.all(0),
-    this.selectedLabelMargin = 7.5,
-    this.unselectedLabelMargin = 3,
+    this.selectedLabelMargin = 8,
+    this.unselectedLabelMargin = 4,
     this.activeTopMargin = -20,
     this.corner = const BorderRadius.all(Radius.zero),
     this.duration = const Duration(milliseconds: 50),
@@ -166,8 +166,7 @@ class WaveBottomBar extends StatefulWidget {
   State<StatefulWidget> createState() => _WaveBottomBarState();
 }
 
-class _WaveBottomBarState extends State<WaveBottomBar>
-    with SingleTickerProviderStateMixin {
+class _WaveBottomBarState extends State<WaveBottomBar> with SingleTickerProviderStateMixin {
   /// the active item index
   int _currentIndex = 0;
   late AnimationController _animCon;
@@ -189,8 +188,7 @@ class _WaveBottomBarState extends State<WaveBottomBar>
   @override
   void didUpdateWidget(covariant WaveBottomBar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.controller != null &&
-        oldWidget.controller != widget.controller) {
+    if (widget.controller != null && oldWidget.controller != widget.controller) {
       widget.controller?._bindState(this);
     }
   }
@@ -202,25 +200,13 @@ class _WaveBottomBarState extends State<WaveBottomBar>
   }
 
   /// the normal widget list of bottom items, contains icon and text
-  List<Widget> createNormalItem() {
+  Widget createNormalItem() {
     final childItem = <Widget>[];
     for (var i = 0; i < widget.items.length; i++) {
-      if (_currentIndex == i) {
+      if (_currentIndex == i ||
+          (widget.type == WaveBottomBarType.fixed && i == widget.items.length ~/ 2)) {
         childItem.add(const Expanded(child: SizedBox()));
         continue;
-      }
-      double height;
-      double margin;
-      bool hasFixed;
-      if (widget.type == WaveBottomBarType.fixed &&
-          i == widget.items.length ~/ 2) {
-        height = widget.height + widget.amplitude;
-        margin = widget.selectedLabelMargin;
-        hasFixed = true;
-      } else {
-        height = widget.height;
-        margin = widget.unselectedLabelMargin;
-        hasFixed = false;
       }
       Widget child = Expanded(
         child: GestureDetector(
@@ -229,102 +215,168 @@ class _WaveBottomBarState extends State<WaveBottomBar>
             animToIndex(i);
           },
           child: Container(
-            height: height,
-            color: Colors.red,
-            child: hasFixed && widget.fixedWidget != null
+            height: widget.height,
+            color: Colors.transparent,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                widget.items[i].icon,
+                if (widget.showUnselectedLabel) ...[
+                  SizedBox(height: widget.unselectedLabelMargin),
+                  Text(
+                    "${widget.items[i].label}",
+                    style: widget.unselectedLabelStyle,
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      );
+      childItem.add(child);
+    }
+    return Row(children: childItem);
+  }
+
+  /// the active item
+  List<Widget> createFixedItem(double perWidth) {
+    final childItem = <Widget>[];
+
+    if (widget.type == WaveBottomBarType.fixed) {
+      if (_currentIndex == widget.items.length ~/ 2) {
+        Widget child = GestureDetector(
+          onTap: () {
+            widget.onTap(_currentIndex);
+            animToIndex(_currentIndex);
+          },
+          child: SizedBox(
+            width: perWidth,
+            child: widget.fixedWidget != null
                 ? Column(children: [widget.fixedWidget!])
                 : Column(
                     mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      widget.items[i].icon,
+                      widget.items[_currentIndex].activeIcon,
                       if (widget.direction == WaveBottomBarDirection.up &&
-                          widget.showUnselectedLabel) ...[
-                        SizedBox(height: margin),
+                          widget.showSelectedLabel) ...[
+                        SizedBox(height: widget.selectedLabelMargin),
                         Text(
-                          "${widget.items[i].label}",
+                          "${widget.items[_currentIndex].label}",
+                          style: widget.selectedLabelStyle,
+                        ),
+                      ],
+                    ],
+                  ),
+          ),
+        );
+        childItem.add(Positioned(
+          left: _currentIndex * perWidth,
+          top: widget.activeTopMargin,
+          bottom: 0,
+          child: child,
+        ));
+      } else {
+        Widget child1 = GestureDetector(
+          onTap: () {
+            widget.onTap(_currentIndex);
+            animToIndex(_currentIndex);
+          },
+          child: SizedBox(
+            width: perWidth,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                widget.items[_currentIndex].activeIcon,
+                SizedBox(height: widget.unselectedLabelMargin),
+                Text(
+                  "${widget.items[_currentIndex].label}",
+                  style: widget.selectedLabelStyle,
+                ),
+              ],
+            ),
+          ),
+        );
+        childItem.add(Positioned(
+          left: _currentIndex * perWidth,
+          top: 0,
+          bottom: 0,
+          child: child1,
+        ));
+
+        int index = widget.items.length ~/ 2;
+        Widget child2 = GestureDetector(
+          onTap: () {
+            widget.onTap(index);
+            animToIndex(index);
+          },
+          child: SizedBox(
+            width: perWidth,
+            child: widget.fixedWidget != null
+                ? Column(children: [widget.fixedWidget!])
+                : Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      widget.items[index].activeIcon,
+                      if (widget.direction == WaveBottomBarDirection.up &&
+                          widget.showSelectedLabel) ...[
+                        SizedBox(height: widget.selectedLabelMargin),
+                        Text(
+                          "${widget.items[index].label}",
                           style: widget.unselectedLabelStyle,
                         ),
                       ],
                     ],
                   ),
           ),
+        );
+        childItem.add(Positioned(
+          left: index * perWidth,
+          top: widget.activeTopMargin,
+          bottom: 0,
+          child: child2,
+        ));
+      }
+    } else {
+      Widget child = GestureDetector(
+        onTap: () {
+          widget.onTap(_currentIndex);
+          animToIndex(_currentIndex);
+        },
+        child: SizedBox(
+          width: perWidth,
+          child: widget.fixedWidget != null
+              ? Column(children: [widget.fixedWidget!])
+              : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    widget.items[_currentIndex].activeIcon,
+                    if (widget.direction == WaveBottomBarDirection.up &&
+                        widget.showSelectedLabel) ...[
+                      SizedBox(height: widget.selectedLabelMargin),
+                      Text(
+                        "${widget.items[_currentIndex].label}",
+                        style: widget.selectedLabelStyle,
+                      ),
+                    ],
+                  ],
+                ),
         ),
       );
-      childItem.add(child);
+      childItem.add(Positioned(
+        left: _currentIndex * perWidth,
+        top: widget.activeTopMargin,
+        bottom: 0,
+        child: child,
+      ));
     }
+
     return childItem;
   }
 
-  /// the active item
-  Widget createActiveItem(double perWidth) {
-    double height;
-    double margin;
-    bool hasFixed;
-    bool hasPosition;
-    bool isCenter;
-    if (widget.type == WaveBottomBarType.fixed) {
-      if (_currentIndex == widget.items.length ~/ 2) {
-        height = widget.height + widget.amplitude;
-        margin = widget.selectedLabelMargin;
-        hasFixed = true;
-        hasPosition = true;
-        isCenter = false;
-      } else {
-        height = widget.height;
-        margin = widget.unselectedLabelMargin;
-        hasFixed = false;
-        hasPosition = true;
-        isCenter = true;
-      }
-    } else {
-      height = widget.height + widget.amplitude;
-      margin = widget.selectedLabelMargin;
-      hasFixed = true;
-      hasPosition = true;
-      isCenter = true;
-    }
-
-    Widget child = GestureDetector(
-      onTap: () {
-        widget.onTap(_currentIndex);
-      },
-      child: Container(
-        width: perWidth,
-        height: height,
-        color: Colors.yellow,
-        child: hasFixed && widget.fixedWidget != null
-            ? Column(children: [widget.fixedWidget!])
-            : Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: isCenter
-                    ? MainAxisAlignment.center
-                    : MainAxisAlignment.start,
-                children: [
-                  widget.items[_currentIndex].activeIcon,
-                  if (widget.direction == WaveBottomBarDirection.up &&
-                      widget.showSelectedLabel) ...[
-                    SizedBox(height: margin),
-                    Text(
-                      "${widget.items[_currentIndex].label}",
-                      style: widget.selectedLabelStyle,
-                    ),
-                  ],
-                ],
-              ),
-      ),
-    );
-    final dx = _currentIndex * perWidth;
-    final offset = FractionalOffset(dx, 0);
-    if (hasPosition) {
-      return FractionallySizedBox(
-        widthFactor: 1 / widget.items.length,
-        alignment: offset,
-        child: child,
-      );
-    } else {
-      return child;
-    }
+  Widget buildItem() {
+    return Container();
   }
 
   /// start anim to active item, pass the percentage to the wave
@@ -345,17 +397,18 @@ class _WaveBottomBarState extends State<WaveBottomBar>
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width -
-        widget.margin.left -
-        widget.margin.right;
+    final bottom = MediaQuery.of(context).padding.bottom;
+    final width = widget.width ?? MediaQuery.of(context).size.width;
     final perWidth = width / widget.items.length;
+    final height = widget.height + bottom;
     return Stack(
+      fit: StackFit.loose,
       clipBehavior: Clip.none,
-      alignment: Alignment.bottomCenter,
+      alignment: Alignment.topCenter,
       children: [
         SizedBox(
           width: width,
-          height: widget.height,
+          height: height,
           child: CustomPaint(
             painter: WavePainter(
               amplitude: widget.amplitude,
@@ -370,11 +423,8 @@ class _WaveBottomBarState extends State<WaveBottomBar>
             ),
           ),
         ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: createNormalItem(),
-        ),
-        createActiveItem(perWidth),
+        createNormalItem(),
+        ...createFixedItem(perWidth),
       ],
     );
   }

@@ -33,14 +33,14 @@ class _UsePageState extends State<UsePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 30),
+            SizedBox(height: 50),
             WaveBottomBar(
               items: BarItem.simpleUse,
               onTap: (index) {
                 debugPrint("$index");
               },
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 40),
             WaveBottomBar(
               items: BarItem.simpleUse,
               fixedWidget: ClipOval(
@@ -56,7 +56,7 @@ class _UsePageState extends State<UsePage> {
                 debugPrint("$index");
               },
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 40),
             WaveBottomBar(
               items: BarItem.fixed,
               type: WaveBottomBarType.fixed,
@@ -64,7 +64,7 @@ class _UsePageState extends State<UsePage> {
                 debugPrint("$index");
               },
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 40),
             WaveBottomBar(
               items: BarItem.fixed,
               fixedWidget: ClipOval(
@@ -81,23 +81,22 @@ class _UsePageState extends State<UsePage> {
                 debugPrint("$index");
               },
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 40),
             WaveBottomBar(
               amplitude: 42,
               waveLength: 120,
-              activeTopMargin: 34,
+              activeTopMargin: -8,
               items: BarItem.simpleUse,
               direction: WaveBottomBarDirection.down,
-              showSelectedLabel: false,
               onTap: (index) {
                 debugPrint("$index");
               },
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 40),
             WaveBottomBar(
               amplitude: 42,
               waveLength: 120,
-              activeTopMargin: 34,
+              activeTopMargin: -8,
               items: BarItem.fixed,
               type: WaveBottomBarType.fixed,
               direction: WaveBottomBarDirection.down,
@@ -109,18 +108,20 @@ class _UsePageState extends State<UsePage> {
           ],
         ),
       ),
-      bottomNavigationBar: WaveBottomBar(
-        items: BarItem.simpleUse,
-        margin: EdgeInsets.only(left: 50, right: 50, bottom: 30),
-        corner: BorderRadius.only(
-          topLeft: Radius.circular(5),
-          topRight: Radius.circular(10),
-          bottomLeft: Radius.circular(15),
-          bottomRight: Radius.circular(20),
+      bottomNavigationBar: Container(
+        margin: EdgeInsets.only(left: 30, right: 30, bottom: 30),
+        child: WaveBottomBar(
+          items: BarItem.simpleUse,
+          corner: BorderRadius.only(
+            topLeft: Radius.circular(5),
+            topRight: Radius.circular(10),
+            bottomLeft: Radius.circular(15),
+            bottomRight: Radius.circular(20),
+          ),
+          onTap: (index) {
+            debugPrint("$index");
+          },
         ),
-        onTap: (index) {
-          debugPrint("$index");
-        },
       ),
     );
   }
