@@ -18,7 +18,7 @@ and provide much attrs to config it which you want, the package is small and sim
 
 ```
 dependencies:
-    wave_bottom_bar: ^1.6.0
+    wave_bottom_bar: ^1.6.1
 ```
 
 #### Simple Usage

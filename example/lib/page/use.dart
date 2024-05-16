@@ -45,6 +45,7 @@ class _UsePageState extends State<UsePage> {
             WaveBottomBar(
               items: BarItem.simpleUse,
               removeBottom: true,
+              activeTopMargin: -20,
               fixedWidget: ClipOval(
                 child: Container(
                   width: 45,
@@ -71,6 +72,7 @@ class _UsePageState extends State<UsePage> {
             WaveBottomBar(
               items: BarItem.fixed,
               removeBottom: true,
+              activeTopMargin: -20,
               fixedWidget: ClipOval(
                 child: Container(
                   width: 45,
@@ -89,7 +91,7 @@ class _UsePageState extends State<UsePage> {
             WaveBottomBar(
               amplitude: 42,
               waveLength: 120,
-              activeTopMargin: -8,
+              activeTopMargin: -25,
               items: BarItem.simpleUse,
               removeBottom: true,
               direction: WaveBottomBarDirection.down,
@@ -101,7 +103,7 @@ class _UsePageState extends State<UsePage> {
             WaveBottomBar(
               amplitude: 42,
               waveLength: 120,
-              activeTopMargin: -8,
+              activeTopMargin: -25,
               items: BarItem.fixed,
               removeBottom: true,
               type: WaveBottomBarType.fixed,
@@ -128,8 +130,15 @@ class _UsePageState extends State<UsePage> {
                 },
               ),
             ),
+            SizedBox(height: 40),
           ],
         ),
+      ),
+      bottomNavigationBar: WaveBottomBar(
+        items: BarItem.simpleUse,
+        onTap: (index) {
+          debugPrint("$index");
+        },
       ),
     );
   }

@@ -143,9 +143,9 @@ class WaveBottomBar extends StatefulWidget {
     this.direction = WaveBottomBarDirection.up,
     this.controller,
     this.selectedLabelMargin = 8,
-    this.unselectedLabelMargin = 4,
-    this.activeTopMargin = -20,
-    this.corner = const BorderRadius.all(Radius.zero),
+    this.unselectedLabelMargin = 5,
+    this.activeTopMargin = -25,
+    this.corner = BorderRadius.zero,
     this.duration = const Duration(milliseconds: 50),
     this.curve = Curves.linear,
     this.selectedLabelStyle = const TextStyle(
@@ -212,7 +212,7 @@ class _WaveBottomBarState extends State<WaveBottomBar> with SingleTickerProvider
         childItem.add(const Expanded(child: SizedBox()));
         continue;
       }
-      Widget child = Expanded(
+      childItem.add(Expanded(
         child: GestureDetector(
           onTap: () {
             widget.onTap(i);
@@ -237,8 +237,7 @@ class _WaveBottomBarState extends State<WaveBottomBar> with SingleTickerProvider
             ),
           ),
         ),
-      );
-      childItem.add(child);
+      ));
     }
     return Row(children: childItem);
   }
@@ -279,7 +278,7 @@ class _WaveBottomBarState extends State<WaveBottomBar> with SingleTickerProvider
     return Positioned(
       left: index * perWidth,
       top: hasFixed ? widget.activeTopMargin : 0,
-      bottom: 0,
+      bottom: MediaQuery.of(context).padding.bottom,
       child: GestureDetector(
         onTap: () {
           widget.onTap(index);
@@ -291,7 +290,7 @@ class _WaveBottomBarState extends State<WaveBottomBar> with SingleTickerProvider
               ? Column(children: [widget.fixedWidget!])
               : Column(
                   mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: hasFixed ? MainAxisAlignment.start : MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     widget.items[index].activeIcon,
                     if (!hideLabel) ...[

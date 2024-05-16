@@ -13,7 +13,7 @@ class ItemRadioWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> sub = [];
+    final sub = <Widget>[];
     sub.add(SizedBox(
       width: 120,
       child: FittedBox(

@@ -1,3 +1,7 @@
+## 1.6.1
+
+- fix
+
 ## 1.6.0
 
 - remove extendBody

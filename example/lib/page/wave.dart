@@ -40,8 +40,8 @@ class _WavePageState extends State<WavePage> {
   String _showFixedWidget = "false";
   String _direction = "up";
   double _selectLabelMargin = 8;
-  double _unselectLabelMargin = 4.0;
-  double _topMargin = 20.0;
+  double _unselectLabelMargin = 5.0;
+  double _topMargin = 25.0;
   int _duration = 50;
   Curve _curve = Curves.linear;
   String _showSelectedLabel = "true";
@@ -326,8 +326,8 @@ class _WavePageState extends State<WavePage> {
         curve: _curve,
         selectedLabelStyle: TextStyle(fontSize: 12, color: Colors.blue),
         unselectedLabelStyle: TextStyle(fontSize: 12, color: Colors.grey),
-        showSelectedLabel: _showSelectedLabel == "true" ? true : false,
-        showUnselectedLabel: _showUnselectedLabel == "true" ? true : false,
+        showSelectedLabel: _showSelectedLabel == "true",
+        showUnselectedLabel: _showUnselectedLabel == "true",
         onTap: (index) {
           debugPrint("$index");
         },
