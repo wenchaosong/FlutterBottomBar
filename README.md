@@ -12,7 +12,7 @@ and provide much attrs to config it which you want, the package is small and sim
 
 ![video show](/pic/demo.mov)
 
-![pic show](https://img.alicdn.com/imgextra/i3/2315514881/O1CN01nyvcZ31lvY9gqVbkI_!!2315514881.png)
+![pic show](https://img.alicdn.com/imgextra/i2/2315514881/O1CN01FLTeuU1lvY9ZTBHXO_!!2315514881.png_500x500)
 
 #### Install
 
