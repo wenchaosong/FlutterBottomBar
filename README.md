@@ -10,7 +10,9 @@ and provide much attrs to config it which you want, the package is small and sim
 
 [web Preview](https://wenchaosong.github.io/FlutterBottomBar/)
 
-![pic](https://img.alicdn.com/imgextra/i2/2315514881/O1CN01XTcLJs1lvY7MI2Med_!!2315514881.gif)
+![video show](/pic/demo.mov)
+
+![pic show](https://img.alicdn.com/imgextra/i3/2315514881/O1CN01nyvcZ31lvY9gqVbkI_!!2315514881.png)
 
 #### Install
 
