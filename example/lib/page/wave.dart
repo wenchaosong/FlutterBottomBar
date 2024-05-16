@@ -41,7 +41,7 @@ class _WavePageState extends State<WavePage> {
   String _direction = "up";
   double _selectLabelMargin = 7.5;
   double _unselectLabelMargin = 3.0;
-  double _topMargin = 5.0;
+  double _topMargin = 20.0;
   int _duration = 50;
   Curve _curve = Curves.linear;
   String _showSelectedLabel = "true";
@@ -75,7 +75,6 @@ class _WavePageState extends State<WavePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
-      extendBody: true,
       appBar: AppBar(
         title: Text('Wave Bar'),
         backgroundColor: Colors.blue,
@@ -324,7 +323,7 @@ class _WavePageState extends State<WavePage> {
             : WaveBottomBarDirection.down,
         selectedLabelMargin: _selectLabelMargin,
         unselectedLabelMargin: _unselectLabelMargin,
-        activeTopMargin: _topMargin,
+        activeTopMargin: -_topMargin,
         duration: Duration(milliseconds: _duration),
         curve: _curve,
         selectedLabelStyle: TextStyle(fontSize: 12, color: Colors.blue),
