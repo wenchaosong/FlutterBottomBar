@@ -170,7 +170,8 @@ class WaveBottomBar extends StatefulWidget {
   State<StatefulWidget> createState() => _WaveBottomBarState();
 }
 
-class _WaveBottomBarState extends State<WaveBottomBar> with SingleTickerProviderStateMixin {
+class _WaveBottomBarState extends State<WaveBottomBar>
+    with SingleTickerProviderStateMixin {
   /// the active item index
   int _currentIndex = 0;
   late AnimationController _animCon;
@@ -192,7 +193,8 @@ class _WaveBottomBarState extends State<WaveBottomBar> with SingleTickerProvider
   @override
   void didUpdateWidget(covariant WaveBottomBar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.controller != null && oldWidget.controller != widget.controller) {
+    if (widget.controller != null &&
+        oldWidget.controller != widget.controller) {
       widget.controller?._bindState(this);
     }
   }
@@ -208,7 +210,8 @@ class _WaveBottomBarState extends State<WaveBottomBar> with SingleTickerProvider
     final childItem = <Widget>[];
     for (var i = 0; i < widget.items.length; i++) {
       if (_currentIndex == i ||
-          (widget.type == WaveBottomBarType.fixed && i == widget.items.length ~/ 2)) {
+          (widget.type == WaveBottomBarType.fixed &&
+              i == widget.items.length ~/ 2)) {
         childItem.add(const Expanded(child: SizedBox()));
         continue;
       }
@@ -251,7 +254,8 @@ class _WaveBottomBarState extends State<WaveBottomBar> with SingleTickerProvider
         childItem.add(buildItem(perWidth, _currentIndex));
       } else {
         childItem.add(buildItem(perWidth, _currentIndex, hasFixed: false));
-        childItem.add(buildItem(perWidth, widget.items.length ~/ 2, isSelect: false));
+        childItem.add(
+            buildItem(perWidth, widget.items.length ~/ 2, isSelect: false));
       }
     } else {
       childItem.add(buildItem(perWidth, _currentIndex));
@@ -295,12 +299,15 @@ class _WaveBottomBarState extends State<WaveBottomBar> with SingleTickerProvider
                     widget.items[index].activeIcon,
                     if (!hideLabel) ...[
                       SizedBox(
-                        height:
-                            hasFixed ? widget.selectedLabelMargin : widget.unselectedLabelMargin,
+                        height: hasFixed
+                            ? widget.selectedLabelMargin
+                            : widget.unselectedLabelMargin,
                       ),
                       Text(
                         "${widget.items[index].label}",
-                        style: isSelect ? widget.selectedLabelStyle : widget.unselectedLabelStyle,
+                        style: isSelect
+                            ? widget.selectedLabelStyle
+                            : widget.unselectedLabelStyle,
                       ),
                     ],
                   ],
