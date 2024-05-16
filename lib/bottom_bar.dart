@@ -121,6 +121,9 @@ class WaveBottomBar extends StatefulWidget {
   /// whether the labels are shown for the unselected [BottomNavigationBarItem]s.
   final bool showUnselectedLabel;
 
+  /// whether remove padding of bottom
+  final bool removeBottom;
+
   /// called when one of the [items] is tapped.
   final Function(int index) onTap;
 
@@ -155,6 +158,7 @@ class WaveBottomBar extends StatefulWidget {
     ),
     this.showSelectedLabel = true,
     this.showUnselectedLabel = true,
+    this.removeBottom = false,
     required this.onTap,
   }) : super(key: key) {
     if (type == WaveBottomBarType.fixed) {
@@ -328,7 +332,7 @@ class _WaveBottomBarState extends State<WaveBottomBar> with SingleTickerProvider
     final bottom = MediaQuery.of(context).padding.bottom;
     final width = widget.width ?? MediaQuery.of(context).size.width;
     final perWidth = width / widget.items.length;
-    final height = widget.height + bottom;
+    final height = widget.removeBottom ? widget.height : widget.height + bottom;
     return Stack(
       fit: StackFit.loose,
       clipBehavior: Clip.none,
